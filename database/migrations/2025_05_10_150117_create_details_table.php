@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('item_id')->constrained('items')->onDelete('cascade');
-            $table->foreignId('colour_id')->constrained('colours')->onDelete('cascade')->nullable();
-            $table->foreignId('size_id')->constrained('sizes')->onDelete('cascade')->nullable();
-            $table->string('detail_image')->nullable();
-            $table->integer('detail_price')->nullable();
-            $table->integer('detail_quantity')->nullable();
+            $table->string('colour')->nullable();
+            $table->string('size')->nullable();
+            $table->string('item_image')->nullable();
+            $table->integer('item_price')->nullable();
+            $table->integer('item_quantity')->nullable();
             $table->timestamps();
         });
     }
