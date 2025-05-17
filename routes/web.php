@@ -16,12 +16,10 @@ use App\Http\Controllers\ItemController;
 |
 */
 
-Route::get('/dashboard', [DashboardController::class, 'index']);
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::resource('items', ItemController::class);
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 Route::get('/about', function () {
     return view('about');
 });

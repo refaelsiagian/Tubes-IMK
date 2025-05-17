@@ -11,7 +11,9 @@ class ItemController extends Controller
      */
     public function index()
     {
-        return view('dashboard.item.index');
+        return view('dashboard.item.index',[
+            'active' => 'item',
+        ]);
     }
 
     /**
