@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class TicketDetail extends Model
 {
     use HasFactory;
+
+    protected $guarded = ['id'];
+    
+    public function ticket()
+    {
+        return $this->belongsTo(Ticket::class);
+    }
 }

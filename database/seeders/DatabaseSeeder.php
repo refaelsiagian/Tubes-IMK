@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
             SizeSeeder::class,
             ItemSeeder::class,
             DetailSeeder::class,
+            TicketSeeder::class,
+            TicketDetailSeeder::class,
         ]);
     }
 }

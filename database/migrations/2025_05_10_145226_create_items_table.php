@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->text('item_description')->nullable();
             $table->integer('buying_price')->nullable();
+            $table->integer('selling_price')->nullable();
             $table->boolean('item_status')->default(1);
             $table->timestamps();
         });
