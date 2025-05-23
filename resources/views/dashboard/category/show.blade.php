@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="page-heading">
-    <h3>Barang</h3>
+    <h3>Barang sesuai Kategori</h3>
 </div>
 
 <div class="page-content"> 
@@ -13,8 +13,21 @@
                 <div class="card-content">
                     <div class="card-header">
                         <div class="d-flex justify-content-between">
-                            <h5 class="card-title">Semua Barang</h5>
-                            <a href="{{ route('items.create') }}" class="btn btn-primary">Tambah Barang</a>
+                            <h5 class="card-title">Hijab Instan</h5>
+                            <div class="btn-group mb-1">
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle me-1" type="button"
+                                        id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        Kategori
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" href="#">Hijab Instan</a>
+                                        <a class="dropdown-item" href="#">Pashmina</a>
+                                        <a class="dropdown-item" href="#">Perlengkapan Haji</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">

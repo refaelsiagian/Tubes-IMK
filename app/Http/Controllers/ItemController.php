@@ -21,7 +21,9 @@ class ItemController extends Controller
      */
     public function create()
     {
-        return view('dashboard.item.create');
+        return view('dashboard.item.create',[
+            'active' => 'item',
+        ]);
     }
 
     /**
@@ -30,6 +32,28 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         //
+    }
+
+    /**
+     * Display the specified resource details.
+     */
+    public function details(string $id)
+    {
+        return view('dashboard.item.detail', [
+            'id' => $id,
+            'active' => 'item',
+        ]);
+    }
+
+    /**
+     * Saving the details of the item.
+     * This method is called after the details are filled in.
+     */
+    public function save(string $id)
+    {
+        return view('dashboard.item.save', [
+            'id' => $id
+        ]);
     }
 
     /**

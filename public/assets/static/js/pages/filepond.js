@@ -108,20 +108,22 @@ FilePond.create(document.querySelector(".imgbb-filepond"), {
 })
 
 // Filepond: Image Preview
-FilePond.create(document.querySelector(".image-preview-filepond"), {
-  credits: null,
-  allowImagePreview: true,
-  allowImageFilter: false,
-  allowImageExifOrientation: false,
-  allowImageCrop: false,
-  acceptedFileTypes: ["image/png", "image/jpg", "image/jpeg"],
-  fileValidateTypeDetectType: (source, type) =>
-    new Promise((resolve, reject) => {
-      // Do custom type detection here and return with promise
-      resolve(type)
-    }),
-  storeAsFile: true,
-})
+document.querySelectorAll(".image-preview-filepond").forEach((input) => {
+  FilePond.create(input, {
+    credits: null,
+    allowImagePreview: true,
+    allowImageFilter: false,
+    allowImageExifOrientation: false,
+    allowImageCrop: false,
+    acceptedFileTypes: ["image/png", "image/jpg", "image/jpeg"],
+    fileValidateTypeDetectType: (source, type) =>
+      new Promise((resolve, reject) => {
+        resolve(type);
+      }),
+    storeAsFile: true,
+  });
+});
+
 
 // Filepond: Image Crop
 FilePond.create(document.querySelector(".image-crop-filepond"), {

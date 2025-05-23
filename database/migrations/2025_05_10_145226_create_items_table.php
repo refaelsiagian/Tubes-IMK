@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('item_slug')->unique();
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->text('item_description')->nullable();
+            $table->integer('buying_price')->nullable();
             $table->boolean('item_status')->default(1);
             $table->timestamps();
         });
