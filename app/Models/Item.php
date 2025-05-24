@@ -8,4 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class Item extends Model
 {
     use HasFactory;
+
+    protected $guarded = ['id'];
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+    
+    public function images()
+    {
+        return $this->hasMany(Image::class);
+    }
+    
+    public function details()
+    {
+        return $this->hasMany(Detail::class);
+    }
 }

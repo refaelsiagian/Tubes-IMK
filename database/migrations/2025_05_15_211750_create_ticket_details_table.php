@@ -12,11 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ticket_details', function (Blueprint $table) {
-            $table->string('ticket_id'); 
+            $table->string('ticket_id');
             $table->foreign('ticket_id')->references('id')->on('tickets')->onDelete('cascade');
 
             $table->string('item_id');
             $table->string('item_name');
+            $table->string('item_colour')->nullable();
+            $table->string('item_size')->nullable();
             $table->integer('item_price');
             $table->integer('item_quantity');
             $table->integer('subtotal');

@@ -45,6 +45,27 @@
                         <li class="sidebar-title">Menu</li>
                         
                         <li
+                            class="sidebar-item @if($active == 'ticket') active @endif">
+                            <a href="{{ route('tickets.index') }}" class='sidebar-link'>
+                                <i class="bi bi-cart-fill"></i>
+                                <span>Kasir</span>
+                            </a>
+                        </li>
+                        <li
+                            class="sidebar-item @if($active == 'info') active @endif">
+                            <a href="{{ route('admin.info') }}" class='sidebar-link'>
+                                <i class="bi bi-info-circle-fill"></i>
+                                <span>Info</span>
+                            </a>
+                        </li>
+                        <li
+                            class="sidebar-item @if($active == 'history') active @endif">
+                            <a href="{{ route('admin.history') }}" class='sidebar-link'>
+                                <i class="bi bi-clock-history"></i>
+                                <span>Riwayat</span>
+                            </a>
+                        </li>
+                        <li
                             class="sidebar-item @if($active == 'dashboard') active @endif">
                             <a href="{{ route('dashboard') }}" class='sidebar-link'>
                                 <i class="bi bi-grid-fill"></i>
@@ -59,15 +80,28 @@
                             </a>
                         </li>
                         <li
-                            class="sidebar-item">
-                            <a href="index.html" class='sidebar-link'>
+                            class="sidebar-item @if($active == 'transaction') active @endif has-sub">
+                            <a href="" class='sidebar-link'>
                                 <i class="bi bi-cash-stack"></i>
                                 <span>Transaksi</span>
                             </a>
+                            <ul class="submenu ">
+                                <li class="submenu-item @if(isset($range) && $range == 'daily') active @endif">
+                                    <a href="{{ route('transactions.index') }}" class="submenu-link">Harian</a>
+                                </li>
+                                
+                                <li class="submenu-item @if(isset($range) && $range == 'monthly') active @endif">
+                                    <a href="form-editor-ckeditor.html" class="submenu-link">Bulanan</a>
+                                </li>
+                                
+                                <li class="submenu-item @if(isset($range) && $range == 'annual') active @endif">
+                                    <a href="form-editor-summernote.html" class="submenu-link">Tahunan</a>
+                                </li>
+                            </ul>
                         </li>
                         <li
-                            class="sidebar-item">
-                            <a href="index.html" class='sidebar-link'>
+                            class="sidebar-item @if($active == 'category') active @endif">
+                            <a href="{{ route('categories.index') }}" class='sidebar-link'>
                                 <i class="bi bi-tags-fill"></i>
                                 <span>Kategori</span>
                             </a>
