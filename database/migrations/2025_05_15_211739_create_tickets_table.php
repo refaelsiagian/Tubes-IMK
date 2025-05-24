@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->date('ticket_date');
-            $table->integer('total_amount');
+            $table->date('ticket_date')->nullable();
+            $table->integer('total_amount')->nullable();
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

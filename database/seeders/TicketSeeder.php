@@ -63,6 +63,7 @@ class TicketSeeder extends Seeder
                 'id' => $id,
                 'ticket_date' => $timeData['ticket_date'],
                 'total_amount' => $totalAmount,
+                'status' => 1,
                 'created_at' => $timeData['timestamp'],
                 'updated_at' => $timeData['timestamp'],
             ];
