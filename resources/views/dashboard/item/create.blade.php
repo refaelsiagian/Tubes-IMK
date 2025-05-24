@@ -12,40 +12,45 @@
             <div class="card">
                 <div class="card-content">
                     <div class="card-body">
-                        <form action="#" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('items.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
-                                <label for="name" class="form-label">Nama Barang</label>
-                                <input type="text" class="form-control" id="name" name="name" required>
+                                <label for="item_name" class="form-label fw-bold">Nama Barang</label>
+                                <input type="text" class="form-control" id="item_name" name="item_name" required>
                             </div>
                             <div class="mb-3">
-                                <label for="category_id" class="form-label">Kategori</label>
+                                <label for="category_id" class="form-label fw-bold">Kategori</label>
                                 <select class="form-select" id="category_id" name="category_id" required>
                                     <option value="" disabled selected>Pilih Kategori</option>
-                                    <option value="Haji">Haji</option>
-                                    <option value="Haji">Jilbab</option>
-                                    <option value="Haji">Aksesoris</option>
-                                    {{-- @foreach($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                    @endforeach --}}
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="description" class="form-label">Deskripsi</label>
-                                <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                                <label for="item_description" class="form-label fw-bold">Deskripsi</label>
+                                <textarea class="form-control" id="item_description" name="item_description" rows="3" required></textarea>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Ukuran</label>
+                            <div class="mb-0">
+                                <label class="form-label fw-bold">Ukuran</label>
                                 <div id="size-container">
                                     <!-- Tambahan size akan muncul di sini -->
                                 </div>
                                 <button type="button" class="btn btn-outline-primary btn-sm" onclick="addSize()">+ Tambah Ukuran</button><br><br>
 
-                                <label class="form-label">Warna</label>
+                                <label class="form-label fw-bold">Warna</label>
                                 <div id="colour-container">
                                     <!-- Tambahan warna akan muncul di sini -->
                                 </div>
                                 <button type="button" class="btn btn-outline-primary btn-sm" onclick="addWarna()">+ Tambah Warna</button><br><br>
+                            </div>
+                            <div class="mb-3">
+                                <label for="buying_price" class="form-label fw-bold">Harga Beli</label>
+                                <input type="number" class="form-control" id="buying_price" name="buying_price" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="selling_price" class="form-label    fw-bold">Harga Jual</label>
+                                <input type="number" class="form-control" id="selling_price" name="selling_price" required>
                             </div>
                             <button type="submit" class="btn btn-primary">Simpan & Lanjut</button>
                             <a href="{{ route('items.details', 1) }}" class="btn btn-danger">Batal</a>
@@ -68,7 +73,7 @@
 
         const input = document.createElement('input');
         input.type = 'text';
-        input.name = 'sizes[]';
+        input.name = 'size[]';
         input.placeholder = 'Ukuran';
         input.className = 'form-control form-control-sm me-2';
         input.setAttribute('required', 'required');

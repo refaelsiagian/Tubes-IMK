@@ -12,7 +12,8 @@
             <div class="card">
                 <div class="card-content">
                     <div class="card-header">
-                        <h4>Nomor Transaksi: 0001</h4>
+                        <button type="button" class="btn btn-primary">Transaksi Baru</button>
+                        <h4 >Nomor Transaksi: 0001</h4>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
