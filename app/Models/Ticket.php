@@ -11,8 +11,12 @@ class Ticket extends Model
 
     protected $guarded = ['id'];
 
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     public function ticket_details()
     {
-        return $this->hasMany(TicketDetail::class);
+        return $this->hasMany(TicketDetail::class, 'ticket_id', 'id');
     }
 }
