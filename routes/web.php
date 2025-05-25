@@ -37,6 +37,10 @@ Route::get('/ticket', [TicketController::class, 'index'])->name('tickets.index')
 Route::get('/ticket/add', [TicketController::class, 'add'])->name('tickets.add');
 Route::post('/ticket/store', [TicketController::class, 'store'])->name('tickets.store');
 Route::post('/ticket/destroy/{id}', [TicketController::class, 'destroy'])->name('tickets.destroy');
+Route::delete('/tickets/{id}/cancel', [TicketController::class, 'cancel'])->name('tickets.cancel');
+Route::post('/tickets/{ticket}/confirm', [TicketController::class, 'confirm'])->name('tickets.confirm');
+Route::post('/tickets/add-item', [TicketController::class, 'addItem'])->name('tickets.addItem');
+Route::delete('/ticket/{ticket}/item/{item}', [TicketController::class, 'destroyItem'])->name('ticket.item.destroy');
 
 Route::get('/info', [InfoController::class, 'index'])->name('admin.info');
 Route::get('/history', [HistoryController::class, 'index'])->name('admin.history');
