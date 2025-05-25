@@ -4,8 +4,8 @@
 <style>
     #item-table th,
     #item-table td {
-    white-space: nowrap; /* Biar kontennya gak wrap ke bawah */
-    min-width: 120px; /* Ganti sesuai kebutuhan */
+        white-space: nowrap;
+        min-width: 120px;
     }
 </style>
 @endsection
@@ -43,127 +43,83 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach ($items as $item)
+                                                                        @php
+                                        // Ambil details untuk item ini
+                                        $itemDetails = $details->has($item->id) ? $details[$item->id] : collect();
+
+                                        // Ambil warna unik
+                                        $itemColours = $itemDetails->pluck('colour')->filter()->unique();
+
+                                        // Ambil size unik
+                                        $itemSizes = $itemDetails->pluck('size')->filter()->unique();
+                                    @endphp
                                     <tr>
-                                        <td>Item 1</td>
-                                        <td>-</td>
-                                        <td>-</td>
-                                        <td>Rp10000</td>
-                                        <td><input type="number" class="form-control" placeholder="Masukkan Jumlah"></td>
-                                        <td>
-                                            <a href="#" class="btn btn-success"><i class="bi bi-plus-circle"></i></a>                                       
-                                        </td>
+                                        <form action="{{ route('tickets.addItem') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
+                                            <input type="hidden" name="item_id" value="{{ $item->id }}">
+                                            <input type="hidden" name="item_name" value="{{ $item->item_name }}">
+                                            <input type="hidden" name="item_price" value="{{ $item->selling_price }}">
+
+                                            <td>{{ $item->item_name }}</td>
+ {{-- Dropdown warna --}}
+                                            <td>
+                                                @if ($itemColours->count() > 0)
+                                                    <select name="item_colour" class="form-select" required>
+                                                        @foreach ($itemColours as $colour)
+                                                            <option value="{{ $colour }}">{{ $colour }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                @else
+                                                    <input type="hidden" name="item_colour" value="">
+                                                    -
+                                                @endif
+                                            </td>
+
+                                            {{-- Dropdown size --}}
+                                            <td>
+                                                @if ($itemSizes->count() > 0)
+                                                    <select name="item_size" class="form-select" required>
+                                                        @foreach ($itemSizes as $size)
+                                                            <option value="{{ $size }}">{{ $size }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                @else
+                                                    <input type="hidden" name="item_size" value="">
+                                                    -
+                                                @endif
+                                            </td>
+
+                                            <td>{{ number_format($item->selling_price, 0, ',', '.') }}</td>
+
+                                            <td>
+                                                <input type="number" name="item_quantity" class="form-control" placeholder="Jumlah" min="1" required>
+                                            </td>
+
+                                            <td>
+                                                <button type="submit" class="btn btn-success"><i class="bi bi-plus-circle"></i></button>
+                                            </td>
+                                        </form>
                                     </tr>
-                                    <tr>
-                                        <td>Item 2</td>
-                                        <td>-</td>
-                                        <td>
-                                            <fieldset class="form-group">
-                                                <select class="form-select" id="basicSelect">
-                                                    <option>XL</option>
-                                                    <option>Blade Runner</option>
-                                                    <option>Thor Ragnarok</option>
-                                                </select>
-                                            </fieldset>
-                                        </td>
-                                        <td>Rp15000</td>
-                                        <td><input type="number" class="form-control" placeholder="Masukkan Jumlah"></td>
-                                        <td>
-                                            <a href="#" class="btn btn-success"><i class="bi bi-plus-circle"></i></a>                                        
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item 3</td>
-                                        <td>
-                                            <fieldset class="form-group">
-                                                <select class="form-select" id="basicSelect">
-                                                    <option>Merah</option>
-                                                    <option>Blade Runner</option>
-                                                    <option>Thor Ragnarok</option>
-                                                </select>
-                                            </fieldset>
-                                        </td>
-                                        <td>
-                                            <fieldset class="form-group">
-                                                <select class="form-select" id="basicSelect">
-                                                    <option>S</option>
-                                                    <option>Blade Runner</option>
-                                                    <option>Thor Ragnarok</option>
-                                                </select>
-                                            </fieldset>
-                                        </td>
-                                        <td>Rp15000</td>
-                                        <td><input type="number" class="form-control" placeholder="Masukkan Jumlah"></td>
-                                        <td>
-                                            <a href="#" class="btn btn-success"><i class="bi bi-plus-circle"></i></a>                                        
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item 4</td>
-                                        <td>-</td>
-                                        <td>-</td>
-                                        <td>Rp15000</td>
-                                        <td><input type="number" class="form-control" placeholder="Masukkan Jumlah"></td>
-                                        <td>
-                                            <a href="#" class="btn btn-success"><i class="bi bi-plus-circle"></i></a>                                        
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item 5</td>
-                                        <td>
-                                            <fieldset class="form-group">
-                                                <select class="form-select" id="basicSelect">
-                                                    <option>Turquoise</option>
-                                                    <option>Magenta</option>
-                                                    <option>Beige</option>
-                                                </select>
-                                            </fieldset>
-                                        </td>
-                                        <td>
-                                            <fieldset class="form-group">
-                                                <select class="form-select" id="basicSelect">
-                                                    <option>L</option>
-                                                    <option>Blade Runner</option>
-                                                    <option>Thor Ragnarok</option>
-                                                </select>
-                                            </fieldset>
-                                        </td>
-                                        <td>Rp15000</td>
-                                        <td><input type="number" class="form-control" placeholder="Masukkan Jumlah"></td>
-                                        <td>
-                                            <a href="#" class="btn btn-success"><i class="bi bi-plus-circle"></i></a>                                        
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item 6</td>
-                                        <td>
-                                            <fieldset class="form-group">
-                                                <select class="form-select" id="basicSelect">
-                                                    <option>Pink</option>
-                                                    <option>Blade Runner</option>
-                                                    <option>Thor Ragnarok</option>
-                                                </select>
-                                            </fieldset>
-                                        </td>
-                                        <td>-</td>
-                                        <td>Rp15000</td>
-                                        <td><input type="number" class="form-control" placeholder="Masukkan Jumlah"></td>
-                                        <td>
-                                            <a href="#" class="btn btn-success"><i class="bi bi-plus-circle"></i></a>                                        
-                                        </td>
-                                    </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
 
                         <div class="row mt-3">
                             <div class="col-md-12 text-end">
-                                <h6>12 Item</h6>
-                                <h4>Total: Rp 100.000</h4>
+                                <h6>{{ $totalQuantity ?? 0 }} Item</h6>
+                                <h4>Total: Rp {{ number_format($totalPrice ?? 0, 0, ',', '.') }}</h4>
                             </div>
                             <div class="col-md-12 text-end">
-                                <a href="{{ route('tickets.index')}}" class="btn btn-primary">Kembali ke Daftar Belanja</a>
+                                <a href="{{ route('tickets.index', ['ticket_id' => $ticket->id]) }}" class="btn btn-primary">Kembali ke Daftar Belanja</a>
+                            </div>
+                            <div class="mt-3">
+                                {{ $items->links() }}
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
