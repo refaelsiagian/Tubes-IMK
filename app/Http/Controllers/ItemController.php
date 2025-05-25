@@ -1,9 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Category;
 use App\Models\Item;
-use App\Models\Details;
+use App\Models\Detail;
+use App\Models\Image;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 
@@ -60,64 +63,141 @@ class ItemController extends Controller
      */
     public function create()
     {
+        //taking the last item id and incrementing it for the new item
+        //example id = A051, A052, A053, etc.
+
+        $lastItem = Item::orderBy('id', 'desc')->first();
+
+        if ($lastItem) {
+            $lastId = $lastItem->id;
+            $numericPart = (int) substr($lastId, 1); // Cast ke integer dulu
+            $id = 'A' . str_pad($numericPart + 1, 3, '0', STR_PAD_LEFT);
+        } else {
+            $id = 'A001'; // If no items exist, start with A001
+        }
+
         $categories = Category::all();
 
-        return view('dashboard.item.create',[
+        return view('dashboard.item.create', [
             'active' => 'item',
             'categories' => $categories,
+            'id' => $id,
         ]);
     }
+
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        dd($request->all());
         $request->validate([
-            'item_name' => 'required|max:255',
+            'item_name' => 'required|max:255|unique:items,item_name',
             'category_id' => 'required|exists:categories,id',
+            'size' => 'nullable|array',
+            'colour' => 'nullable|array',
             'item_description' => 'nullable|string',
             'buying_price' => 'nullable|numeric|min:0',
             'selling_price' => 'nullable|numeric|min:0',
         ]);
-        // Check if item name already exists
+
         $item = Item::where('item_name', $request->item_name)->first();
         if ($item) {
-            return redirect()->route('items.index')->with('error', 'Barang sudah ada.');
+            return redirect()->route('items.create')->with('error', 'Barang sudah ada.')->withInput();
         }
-        // Make the item name always in capital case
-        $itemName = ucwords(strtolower($request->item_name));
-        $request->merge(['item_name' => $itemName]);
-        // Create a slug from the item name
+
         $slug = str_replace(' ', '-', strtolower($request->item_name));
-        $request->merge(['item_slug' => $slug]);
-        // Create the item
-        Item::create($request->all());
-        return redirect()->route('items.index')->with('success', 'Barang berhasil ditambahkan.');
+        $request->merge(['item_slug' => $slug, 'item_status' => 0]);
+
+        $newItem = Item::create($request->all());
+
+        // Panggil fungsi untuk buat detail
+        $this->createItemDetails($newItem, $request->input('size', []), $request->input('colour', []));
+
+        // Panggil fungsi untuk buat image slots
+        $this->createImageSlots($newItem, $request->input('colour', []));
+
+        return redirect()->route('items.details', $newItem->id)->with('success', 'Barang berhasil ditambahkan.');
     }
+
 
     /**
      * Display the specified resource details.
      */
     public function details(string $id)
     {
+        $item = Item::with(['details', 'images'])->findOrFail($id);
+
+        // Ambil semua warna dari images (kecuali yang general / colour null)
+        $colours = $item->images->whereNotNull('colour')->pluck('colour')->unique()->values();
+
+        // Ambil semua kombinasi size + colour dari details
+        $details = $item->details;
+
+        $image_general = $item->images->whereNull('colour');
+        $image_colour = $item->images->whereNotNull('colour');
+
         return view('dashboard.item.detail', [
-            'id' => $id,
+            'item' => $item,
+            'colours' => $colours,
+            'details' => $details,
+            'image_general' => $image_general,
+            'image_colour' => $image_colour,
             'active' => 'item',
         ]);
+
     }
 
+
     /**
-     * Saving the details of the item.
+     * Modify the details of the item.
      * This method is called after the details are filled in.
      */
-    public function save(string $id)
+    public function modify(Request $request, string $id)
     {
-        return view('dashboard.item.save', [
-            'id' => $id
-        ]);
+        $item = Item::findOrFail($id);
+
+        // 1️⃣ Hapus gambar yang ditandai
+        $removeIds = $request->input('remove_image', []);
+        foreach ($removeIds as $imageId) {
+            $slot = Image::find($imageId);
+            if ($slot && $slot->image_name) {
+                Storage::disk('public')->delete($slot->image_name);
+                $slot->update(['image_name' => null]);
+            }
+        }
+
+        // 2️⃣ Upload gambar baru (langsung ganti)
+        $inputImages = $request->file('image', []);
+        foreach ($inputImages as $slotId => $uploadedFile) {
+            $slot = Image::find($slotId);
+            if ($slot && $uploadedFile) {
+                // Hapus gambar lama (kalau ada)
+                if ($slot->image_name) {
+                    Storage::disk('public')->delete($slot->image_name);
+                }
+                $path = $uploadedFile->store('images', 'public');
+                $slot->update(['image_name' => $path]);
+            }
+        }
+
+        // 3️⃣ Update Stock (biarkan)
+        if ($request->has('stock')) {
+            foreach ($request->input('stock') as $detailId => $stockValue) {
+                $detail = Detail::find($detailId);
+                if ($detail) {
+                    $detail->update([
+                        'stock' => is_numeric($stockValue) ? $detail->stock + $stockValue : 0,
+                    ]);
+                }
+            }
+        }
+
+        return back()->with('success', 'Item berhasil diperbarui!');
     }
+
+
+
 
     /**
      * Display the specified resource.
@@ -132,16 +212,127 @@ class ItemController extends Controller
      */
     public function edit(string $id)
     {
-        return view('dashboard.item.edit', ['id' => $id]);
+        return view('dashboard.item.edit', [
+            'id' => $id,
+            'active' => 'item',
+            'categories' => Category::all(),
+            'item' => Item::findOrFail($id),
+            'sizes' => Detail::where('item_id', $id)->pluck('size')->unique()->values(),
+            'colours' => Detail::where('item_id', $id)->pluck('colour')->unique()->values(),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $item = Item::findOrFail($id);
+
+            // Cek validasi input
+            $request->validate([
+                'item_name' => 'required|max:255|unique:items,item_name,' . $item->id,
+                'category_id' => 'required|exists:categories,id',
+                'size' => 'nullable|array',
+                'colour' => 'nullable|array',
+                'item_description' => 'nullable|string',
+                'buying_price' => 'nullable|numeric|min:0',
+                'selling_price' => 'nullable|numeric|min:0',
+            ]);
+
+            // Update data utama
+            $item->item_name = $request->item_name;
+            $item->item_slug = str_replace(' ', '-', strtolower($request->item_name));
+            $item->category_id = $request->category_id;
+            $item->item_description = $request->item_description;
+            $item->buying_price = $request->buying_price;
+            $item->selling_price = $request->selling_price;
+            $item->save();
+
+            // Ambil input size & colour (bisa null kalau nggak ada)
+            $sizes = $request->size ?? [];
+            $colours = $request->colour ?? [];
+
+            // Konversi ke array unik (biar nggak ada duplikat)
+            $sizes = array_unique(array_filter($sizes));
+            $colours = array_unique(array_filter($colours));
+
+            // Data kombinasi baru yang akan dibentuk
+            $newCombinations = [];
+
+            if (count($sizes) == 0 && count($colours) == 0) {
+                // Tidak ada size & colour -> Buat default kosong
+                $newCombinations[] = ['size' => null, 'colour' => null];
+            } else {
+                // Ada size/colour -> Buat kombinasi
+                if (count($sizes) == 0) $sizes = [null];
+                if (count($colours) == 0) $colours = [null];
+
+                foreach ($sizes as $size) {
+                    foreach ($colours as $colour) {
+                        $newCombinations[] = ['size' => $size, 'colour' => $colour];
+                    }
+                }
+            }
+
+            // Ambil kombinasi lama
+            $oldDetails = Detail::where('item_id', $item->id)->get();
+            $oldKeys = $oldDetails->map(function ($d) {
+                return $d->size . '|' . $d->colour;
+            })->toArray();
+
+            $newKeys = array_map(function ($c) {
+                return $c['size'] . '|' . $c['colour'];
+            }, $newCombinations);
+
+            // Tambah kombinasi baru
+            foreach ($newCombinations as $comb) {
+                $key = $comb['size'] . '|' . $comb['colour'];
+                if (!in_array($key, $oldKeys)) {
+                    $newDetail = new Detail();
+                    $newDetail->item_id = $item->id;
+                    $newDetail->size = $comb['size'];
+                    $newDetail->colour = $comb['colour'];
+                    $newDetail->stock = 0; // default stock 0
+                    $newDetail->save();
+
+                    // Buat slot gambar (kalau perlu), hanya jika belum ada
+                    if ($comb['colour'] !== null && !Image::where('item_id', $item->id)->where('colour', $comb['colour'])->exists()) {
+                        Image::create([
+                            'item_id' => $item->id,
+                            'colour' => $comb['colour'],
+                            'image_path' => null, // default kosong
+                        ]);
+                    }
+                }
+            }
+
+            // Hapus kombinasi lama yang sudah tidak ada
+            foreach ($oldDetails as $detail) {
+                $key = $detail->size . '|' . $detail->colour;
+                if (!in_array($key, $newKeys)) {
+                    // Hapus detail
+                    $detail->delete();
+
+                    // Hapus slot gambar juga kalau warnanya sudah tidak ada
+                    if (!in_array($detail->colour, array_column($newCombinations, 'colour'))) {
+                        Image::where('item_id', $item->id)
+                            ->where('colour', $detail->colour)
+                            ->delete();
+                    }
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('items.details', $item->id)->with('success', 'Item berhasil diupdate.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Gagal update: ' . $e->getMessage())->withInput();
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -150,4 +341,81 @@ class ItemController extends Controller
     {
         //
     }
+
+    /**
+     * Create item details for the new item.
+     */
+    private function createItemDetails($item, $sizes = [], $colours = [])
+    {
+        $sizes = is_array($sizes) ? array_filter($sizes) : [];
+        $colours = is_array($colours) ? array_filter($colours) : [];
+
+        if (count($sizes) && count($colours)) {
+            // Kombinasi semua size dan colour
+            foreach ($sizes as $size) {
+                foreach ($colours as $colour) {
+                    Detail::create([
+                        'item_id' => $item->id,
+                        'size' => $size,
+                        'colour' => $colour,
+                        'stock' => 0,
+                    ]);
+                }
+            }
+        } elseif (count($sizes)) {
+            // Hanya size
+            foreach ($sizes as $size) {
+                Detail::create([
+                    'item_id' => $item->id,
+                    'size' => $size,
+                    'colour' => null,
+                    'stock' => 0,
+                ]);
+            }
+        } elseif (count($colours)) {
+            // Hanya colour
+            foreach ($colours as $colour) {
+                Detail::create([
+                    'item_id' => $item->id,
+                    'size' => null,
+                    'colour' => $colour,
+                    'stock' => 0,
+                ]);
+            }
+        } else {
+            // Tidak ada size dan colour, buat satu detail kosong
+            Detail::create([
+                'item_id' => $item->id,
+                'size' => null,
+                'colour' => null,
+                'stock' => 0,
+            ]);
+        }
+    }
+
+    private function createImageSlots($item, $colours = [])
+    {
+        $colours = is_array($colours) ? array_filter($colours) : [];
+
+        // Slot wajib (general)
+        for( $i = 0; $i < 5; $i++) {
+            // Buat 5 slot kosong untuk gambar umum
+            Image::create([
+                'item_id' => $item->id,
+                'colour' => null,
+                'image_name' => null,
+            ]);
+        }
+
+        // Slot per colour jika ada
+        foreach ($colours as $colour) {
+            Image::create([
+                'item_id' => $item->id,
+                'colour' => $colour,
+                'image_name' => null,
+            ]);
+        }
+    }
+
+
 }

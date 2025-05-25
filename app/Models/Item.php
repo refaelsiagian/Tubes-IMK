@@ -9,7 +9,23 @@ class Item extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'id', // Ensure ID is fillable
+        'item_name',
+        'item_slug',
+        'category_id',
+        'item_description',
+        'buying_price',
+        'selling_price',
+        'item_status',
+        'stock',
+    ];
+    public $incrementing = false; // Use string IDs
+    protected $keyType = 'string'; // Specify the key type as string
+    protected $casts = [
+        'id' => 'string', // Ensure the ID is treated as a string
+    ];
+
     public function category()
     {
         return $this->belongsTo(Category::class);

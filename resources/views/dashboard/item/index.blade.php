@@ -40,13 +40,14 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <table class="table table-striped" id="table1">
+                        <table class="table table-striped table-hover" style="min-width: 800px; white-space: nowrap;" id="table1">
                             <thead>
                                 <tr>
                                     <th>Nama Barang</th>
                                     <th>Kategori</th>
                                     <th>Harga</th>
                                     <th>Stok</th>
+                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -58,13 +59,28 @@
                                     <td>{{ number_format($item->selling_price, 0, ',', '.') }}</td>
                                     <td>{{ $item->total_stock }}</td>
                                     <td>
-                                        <a href="{{ route('items.show', $item->id) }}" class="btn btn-success">Lihat</a>
-                                        <a href="{{ route('items.edit', $item->id) }}" class="btn btn-primary">Edit</a>
+                                        @if ($item->item_status == 1)
+                                        <span class="badge bg-success">Ditampilkan</span>
+                                        @else
+                                        <span class="badge bg-danger">Ditarik</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('items.edit', $item->id) }}" class="btn btn-success">Edit</a>
+                                        <a href="{{ route('items.details', $item->id) }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Foto & Stok">Detail</a>
+                                        @if($item->item_status == 1)
                                         <form action="{{ route('items.destroy', $item->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">Hapus</button>
+                                            <button type="submit" class="btn btn-warning">Tarik</button>
                                         </form>
+                                        @else
+                                        <form action="{{ route('items.destroy', $item->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit" class="btn btn-warning">Tampilkan</button>
+                                        </form>
+                                        @endif
                                     </td>
                                 </tr>
                                 @endforeach
@@ -82,4 +98,14 @@
 @section('script')
 <script src="assets/extensions/simple-datatables/umd/simple-datatables.js"></script>
 <script src="assets/static/js/pages/simple-datatables.js"></script>
+<script>
+    // If you want to use tooltips in your project, we suggest initializing them globally
+    // instead of a "per-page" level.
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    }, false);
+</script>
 @endsection

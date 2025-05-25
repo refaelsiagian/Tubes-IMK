@@ -25,6 +25,9 @@ use App\Http\Controllers\HistoryController;
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::resource('items', ItemController::class);
+Route::get('items/{item}/details', [ItemController::class, 'details'])->name('items.details');
+Route::post('items/{item}/modify', [ItemController::class, 'modify'])->name('items.modify');
+
 Route::resource('categories', CategoryController::class)->except(['show', 'edit', 'create']);
 
 
