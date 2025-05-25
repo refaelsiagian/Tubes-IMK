@@ -4,7 +4,7 @@
 
 <div class="page-heading">
     <h3>Riwayat Penjualan Hari Ini</h3>
-    <p class="text-muted">23 Maret 2022</p>
+    <p class="text-muted">{{ $riwayat }}</p>
 </div>
 
 <div class="page-content"> 
@@ -23,51 +23,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>SH0045</td>
-                                        <td>13:54:12</td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                Lihat
-                                            </button>
-                                       </td>
-                                    </tr>
-                                    <tr>
-                                        <td>SH0045</td>
-                                        <td>13:54:12</td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                Lihat
-                                            </button>
-                                       </td>
-                                    </tr>
-                                    <tr>
-                                        <td>SH0045</td>
-                                        <td>13:54:12</td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                Lihat
-                                            </button>
-                                       </td>
-                                    </tr>
-                                    <tr>
-                                        <td>SH0045</td>
-                                        <td>13:54:12</td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                Lihat
-                                            </button>
-                                       </td>
-                                    </tr>
-                                    <tr>
-                                        <td>SH0045</td>
-                                        <td>13:54:12</td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                Lihat
-                                            </button>
-                                       </td>
-                                    </tr>
+                                    @foreach ($tickets as $ticket)
+                                        <tr>
+                                            <td>{{ $ticket->id }}</td>
+                                            <td>{{ $ticket->created_at->format('H:i:s') }}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-{{ $ticket->id }}">
+                                                    Lihat
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -78,65 +44,53 @@
     </section>
 </div>
 
-<!--Confirm delete Modal -->
-<div class="modal modal-border fade text-left" id="deleteModal" tabindex="-1" role="dialog"
-    aria-labelledby="myModalLabel33" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
-        role="document">
+@foreach ($tickets as $ticket)
+<div class="modal modal-border fade text-left" id="modal-{{ $ticket->id }}" tabindex="-1" role="dialog" aria-labelledby="modalLabel{{ $ticket->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel33">SH0045</h4>
-                <button type="button" class="close" data-bs-dismiss="modal"
-                    aria-label="Close">
+                <h4 class="modal-title" id="modalLabel{{ $ticket->id }}">Kode: {{ $ticket->id }}</h4>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <i data-feather="x"></i>
                 </button>
             </div>
-            <form action="#">
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover" id="item-table">
-                            <thead>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nama Barang</th>
+                                <th>Jumlah</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $total = 0; @endphp
+                            @foreach ($ticket->ticket_details as $detail)
                                 <tr>
-                                    <th>Nama Barang</th>
-                                    <th>Jumlah</th>
-                                    <th>Subtotal</th>
+                                    <td>{{ $detail->item_name ?? ($detail->item->name ?? '-') }}, {{ $detail->item_colour ?? '-' }}, {{ $detail->item_size ?? '-' }}</td>
+                                    <td>{{ $detail->item_quantity ?? $detail->qty }}</td>
+                                    <td>Rp{{ number_format($detail->subtotal, 0, ',', '.') }}</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Pashmina, Merah, XL</td>
-                                    <td>2</td>
-                                    <td>Rp30.000</td>
-                                </tr>
-                                <tr>
-                                    <td>Baju, XL</td>
-                                    <td>1</td>
-                                    <td>Rp40.000</td>
-                                </tr>
-                                <tr>
-                                    <td>Hijab, XL</td>
-                                    <td>2</td>
-                                    <td>Rp80.000</td>
-                                </tr>
-                                <tr>
-                                    <td><p class="fw-bold">Total</p></td>
-                                    <td></td>
-                                    <td><p class="fw-bold">Rp160.000</p></p></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                                @php $total += $detail->subtotal; @endphp
+                            @endforeach
+                            <tr>
+                                <td><strong>Total</strong></td>
+                                <td></td>
+                                <td><strong>Rp{{ number_format($total, 0, ',', '.') }}</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light-secondary"
-                        data-bs-dismiss="modal">
-                        <i class="bx bx-x d-block d-sm-none"></i>
-                        <span class="d-none d-sm-block">Tutup</span>
-                    </button>
-                </div>
-            </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                    <span class="d-none d-sm-block">Tutup</span>
+                </button>
+            </div>
         </div>
     </div>
 </div>
+@endforeach
 
 @endsection

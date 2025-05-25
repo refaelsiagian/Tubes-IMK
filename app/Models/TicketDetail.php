@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Item;
+use App\Models\Ticket;
 
 class TicketDetail extends Model
 {
@@ -16,13 +18,15 @@ class TicketDetail extends Model
         'item_price', 'item_quantity', 'subtotal'
     ];
 
-    public function ticket()
-    {
-        return $this->belongsTo(Ticket::class, 'ticket_id', 'id');
-    }
+    protected $guarded = ['id'];
 
     public function item()
     {
-        return $this->belongsTo(Item::class, 'item_id');
+        return $this->belongsTo(Item::class);
+    }
+
+    public function ticket()
+    {
+        return $this->belongsTo(Ticket::class, 'ticket_id', 'id');
     }
 }

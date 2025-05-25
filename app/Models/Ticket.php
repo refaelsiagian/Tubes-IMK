@@ -11,6 +11,10 @@ class Ticket extends Model
 
     public $incrementing = false; // Karena kamu pakai custom ID string
 
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     public function ticket_details()
     {
         return $this->hasMany(TicketDetail::class, 'ticket_id', 'id');
