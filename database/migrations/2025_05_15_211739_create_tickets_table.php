@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->string('id')->primary();
+            $table->string('admin_id', 20); // Assuming user_id is a string like 'R001'
+
+            $table->foreign('admin_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
+
             $table->date('ticket_date')->nullable();
             $table->integer('total_amount')->nullable();
             $table->integer('status')->default(0);

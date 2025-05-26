@@ -42,8 +42,21 @@
                 </div>
                 <div class="sidebar-menu">
                     <ul class="menu">
+
+                        <li class="sidebar-item">
+                            <a href="#" class="d-flex align-items-center">
+                                <i class="bi bi-person-circle fs-3 me-2"></i> {{-- ikon besar dan kasih margin kanan --}}
+                                <div class="d-flex flex-column">
+                                    <span class="fw-semibold">{{ auth()->user()->name }} Role: {{ auth()->user()->role }}</span>
+                                    <small class="text-muted">{{ auth()->user()->id }}</small>
+                                </div>
+                            </a>
+                        </li>
+
+
                         <li class="sidebar-title">Menu</li>
                         
+                        @can('admin')
                         <li
                             class="sidebar-item @if($active == 'ticket') active @endif">
                             <a href="{{ route('tickets.index') }}" class='sidebar-link'>
@@ -65,6 +78,9 @@
                                 <span>Riwayat</span>
                             </a>
                         </li>
+                        @endcan
+                        
+                        @can('owner')
                         <li
                             class="sidebar-item @if($active == 'dashboard') active @endif">
                             <a href="{{ route('dashboard') }}" class='sidebar-link'>
@@ -105,6 +121,18 @@
                                 <i class="bi bi-tags-fill"></i>
                                 <span>Kategori</span>
                             </a>
+                        </li>
+                        @endcan
+
+                        {{-- logout --}}
+                        <li class="sidebar-item">
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class='sidebar-link btn w-100'>
+                                    <i class="bi bi-box-arrow-right"></i>
+                                    <span>Logout</span>
+                                </button>
+                            </form>
                         </li>
                     </ul>
                 </div>

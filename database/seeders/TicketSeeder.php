@@ -59,8 +59,11 @@ class TicketSeeder extends Seeder
             $id = 'SH' . str_pad($i + 1, 4, '0', STR_PAD_LEFT);
             $totalAmount = rand(15, 1000) * 1000;
 
+            $admin_id = ['R002', 'R003'][array_rand(['R002', 'R003'])];
+
             $tickets[] = [
                 'id' => $id,
+                'admin_id' => $admin_id,
                 'ticket_date' => $timeData['ticket_date'],
                 'total_amount' => $totalAmount,
                 'status' => 1,

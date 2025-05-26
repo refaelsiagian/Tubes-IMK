@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
+            UserSeeder::class,
             ColourSeeder::class,
             CategorySeeder::class,
             SizeSeeder::class,
@@ -27,6 +28,7 @@ class DatabaseSeeder extends Seeder
             DetailSeeder::class,
             TicketSeeder::class,
             TicketDetailSeeder::class,
+            ImageSeeder::class,
         ]);
     }
 }
