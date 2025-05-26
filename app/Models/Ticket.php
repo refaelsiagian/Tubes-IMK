@@ -11,8 +11,6 @@ class Ticket extends Model
 
     public $incrementing = false; // Karena kamu pakai custom ID string
 
-    public $incrementing = false;
-
     protected $keyType = 'string';
 
     public function ticket_details()
@@ -40,5 +38,10 @@ class Ticket extends Model
             $lastNumber = intval(substr($lastTicket->id, 2));
         }
         return 'SH' . str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+    }
+
+    public function admin()
+    {
+        return $this->belongsTo(User::class, 'admin_id', 'id');
     }
 }

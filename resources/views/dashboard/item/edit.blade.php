@@ -63,7 +63,7 @@
                                 <label class="form-label fw-bold">Ukuran</label>
                                 <div id="size-container">
                                     <!-- Tambahan size akan muncul di sini -->
-                                    @if($sizes)
+                                    @if($sizes[0] != null)
                                         @foreach($sizes as $size)
                                             <li class="d-flex mb-2">
                                                 <input type="text" name="size[]" value="{{ $size }}" placeholder="Ukuran" class="form-control form-control-sm me-2" readonly>
@@ -88,7 +88,7 @@
 
                                 <label class="form-label fw-bold">Warna</label>
                                 <div id="colour-container">
-                                    @if($colours)
+                                    @if($colours[0] != null)
                                         @foreach($colours as $colour)
                                             <li class="d-flex mb-2">
                                                 <input type="text" name="colour[]" value="{{ $colour }}" placeholder="Warna" class="form-control form-control-sm me-2" readonly>

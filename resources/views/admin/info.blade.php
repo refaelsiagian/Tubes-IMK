@@ -1,5 +1,13 @@
 @extends('dashboard.layout.main')
 
+@section('style')
+<link rel="stylesheet" href="assets/extensions/simple-datatables/style.css">
+
+
+  <link rel="stylesheet" href="./assets/compiled/css/table-datatable.css">
+@endsection
+
+
 @section('content')
 
 <div class="page-heading">
@@ -93,12 +101,12 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-striped table-borderless table-hover" id="item-table">
+                                <table class="table table-striped table-borderless table-hover" id="form-table" style="min-width: 800px; white-space: nowrap">
                                     <thead>
                                         <tr>
                                             <th>Nama Barang</th>
                                             <th>Barang terjual</th>
-                                            <th>Banyak Transaksi</th>
+                                            <th>Dalam Transaksi</th>
                                             <th>Total Penghasilan</th>
                                         </tr>
                                     </thead>
@@ -114,7 +122,7 @@
                                         <tr>
                                             <td><p class="fw-bold">Total</p></td>
                                             <td><p class="fw-bold">{{ $totalItemSold }}</p></td>
-                                            <td><p class="fw-bold">{{ $transactionCount }} kali</p></td>
+                                            <td></td>
                                             <td><p class="fw-bold">Rp{{ number_format($totalIncome, 0, ',', '.') }}</p></td>
                                         </tr>
                                     </tbody>
@@ -129,4 +137,9 @@
     </section>
 </div>
 
+@endsection
+
+@section('script')
+<script src="assets/extensions/simple-datatables/umd/simple-datatables.js"></script>
+<script src="assets/static/js/pages/simple-datatables.js"></script>
 @endsection

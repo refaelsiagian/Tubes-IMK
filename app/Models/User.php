@@ -18,10 +18,15 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
+        'role',
         'name',
         'email',
         'password',
     ];
+
+    protected $keyType = 'string';
+    public $incrementing = false;
 
     /**
      * The attributes that should be hidden for serialization.
@@ -39,7 +44,13 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
+        'id' => 'string',
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class, 'admin_id', 'id');
+    }
 }

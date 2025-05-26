@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\Ticket;
 
 class InfoController extends Controller
 {
@@ -34,7 +35,7 @@ class InfoController extends Controller
 
 
         $totalIncome = $itemSales->sum('penghasilan');
-        $transactionCount = $itemSales->sum('banyak_transaksi');
+        $transactionCount = Ticket::whereDate('created_at', $tanggal)->count();
         $avgTransaction = $transactionCount > 0 ? $totalIncome / $transactionCount : 0;
         $totalItemSold = $itemSales->sum('barang_terjual');
 

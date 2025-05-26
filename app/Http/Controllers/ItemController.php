@@ -117,7 +117,7 @@ class ItemController extends Controller
         // Panggil fungsi untuk buat image slots
         $this->createImageSlots($newItem, $request->input('colour', []));
 
-        return redirect()->route('items.details', $newItem->id)->with('success', 'Barang berhasil ditambahkan.');
+        return redirect()->route('items.details', $newItem->id)->with('success', 'Barang berhasil ditambahkan. Silahkan isi detail barang.');
     }
 
 
@@ -197,6 +197,28 @@ class ItemController extends Controller
     }
 
 
+    /**
+     * Withdraw an item.
+     */
+    public function withdraw(string $id){
+        //mengubah status item menjadi 0 (withdrawn)
+        $item = Item::findOrFail($id);
+        $item->item_status = 0; // Set status ke withdrawn
+        $item->save();
+        return redirect()->route('items.index')->with('success', 'Item berhasil ditarik.');
+    }
+
+
+    /**
+     * Restore an item.
+     */
+    public function restore(string $id){
+        //mengubah status item menjadi 1 (active)
+        $item = Item::findOrFail($id);
+        $item->item_status = 1; // Set status ke active
+        $item->save();
+        return redirect()->route('items.index')->with('success', 'Item berhasil ditampilkan.');
+    }
 
 
     /**
@@ -206,6 +228,8 @@ class ItemController extends Controller
     {
         return view('dashboard.item.show', ['id' => $id]);
     }
+
+
 
     /**
      * Show the form for editing the specified resource.
@@ -221,6 +245,8 @@ class ItemController extends Controller
             'colours' => Detail::where('item_id', $id)->pluck('colour')->unique()->values(),
         ]);
     }
+
+
 
     /**
      * Update the specified resource in storage.
@@ -334,6 +360,7 @@ class ItemController extends Controller
     }
 
 
+
     /**
      * Remove the specified resource from storage.
      */
@@ -341,6 +368,9 @@ class ItemController extends Controller
     {
         //
     }
+
+
+
 
     /**
      * Create item details for the new item.
@@ -392,6 +422,9 @@ class ItemController extends Controller
             ]);
         }
     }
+
+
+
 
     private function createImageSlots($item, $colours = [])
     {

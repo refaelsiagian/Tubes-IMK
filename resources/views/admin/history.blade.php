@@ -1,5 +1,12 @@
 @extends('dashboard.layout.main')
 
+@section('style')
+<link rel="stylesheet" href="{{ asset('assets/extensions/simple-datatables/style.css') }}">
+
+
+  <link rel="stylesheet" href="{{ asset('assets/compiled/css/table-datatable.css') }}">
+@endsection
+
 @section('content')
 
 <div class="page-heading">
@@ -14,23 +21,49 @@
                 <div class="card-content">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-striped table-bordered table-hover" id="item-table">
+                            <table class="table table-striped table-bordered" id="table1" style="min-width: 800px; white-space: nowrap">
                                 <thead>
                                     <tr>
                                         <th>Kode Pembelian</th>
+                                        <th>Admin</th>
                                         <th>Waktu</th>
-                                        <th>Action</th>
+                                        <th>Detail</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($tickets as $ticket)
                                         <tr>
                                             <td>{{ $ticket->id }}</td>
+                                            <td>{{ $ticket->admin->name }}</td>
                                             <td>{{ $ticket->created_at->format('H:i:s') }}</td>
                                             <td>
-                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-{{ $ticket->id }}">
-                                                    Lihat
-                                                </button>
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width: 60%;">Nama Barang</th>
+                                                                <th style="width: 15%;">Jumlah</th>
+                                                                <th style="width: 25%;">Subtotal</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @php $total = 0; @endphp
+                                                            @foreach ($ticket->ticket_details as $detail)
+                                                                <tr>
+                                                                    <td>{{ $detail->item_name ?? ($detail->item->name ?? '-') }}{{ $detail->item_colour ? ', ' . $detail->item_colour : '' }}{{ $detail->item_size ? ', ' . $detail->item_size : '' }}</td>
+                                                                    <td>{{ $detail->item_quantity ?? $detail->qty }}</td>
+                                                                    <td>Rp{{ number_format($detail->subtotal, 0, ',', '.') }}</td>
+                                                                </tr>
+                                                                @php $total += $detail->subtotal; @endphp
+                                                            @endforeach
+                                                            <tr>
+                                                                <td><strong>Total</strong></td>
+                                                                <td></td>
+                                                                <td><strong>Rp{{ number_format($total, 0, ',', '.') }}</strong></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -44,53 +77,10 @@
     </section>
 </div>
 
-@foreach ($tickets as $ticket)
-<div class="modal modal-border fade text-left" id="modal-{{ $ticket->id }}" tabindex="-1" role="dialog" aria-labelledby="modalLabel{{ $ticket->id }}" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="modalLabel{{ $ticket->id }}">Kode: {{ $ticket->id }}</h4>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <i data-feather="x"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Nama Barang</th>
-                                <th>Jumlah</th>
-                                <th>Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php $total = 0; @endphp
-                            @foreach ($ticket->ticket_details as $detail)
-                                <tr>
-                                    <td>{{ $detail->item_name ?? ($detail->item->name ?? '-') }}, {{ $detail->item_colour ?? '-' }}, {{ $detail->item_size ?? '-' }}</td>
-                                    <td>{{ $detail->item_quantity ?? $detail->qty }}</td>
-                                    <td>Rp{{ number_format($detail->subtotal, 0, ',', '.') }}</td>
-                                </tr>
-                                @php $total += $detail->subtotal; @endphp
-                            @endforeach
-                            <tr>
-                                <td><strong>Total</strong></td>
-                                <td></td>
-                                <td><strong>Rp{{ number_format($total, 0, ',', '.') }}</strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                    <span class="d-none d-sm-block">Tutup</span>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-@endforeach
 
+@endsection
+
+@section('script')
+<script src="{{ asset('assets/extensions/simple-datatables/umd/simple-datatables.js') }}"></script>
+<script src="{{ asset('assets/static/js/pages/simple-datatables.js') }}"></script>
 @endsection

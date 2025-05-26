@@ -3,8 +3,7 @@
 @section('style')
 <style>
     input.form-control[readonly] {
-        background-color: #d2d2d2;
-        opacity: 1;
+        cursor: not-allowed;
     }
 </style>
 @endsection

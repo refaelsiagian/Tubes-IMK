@@ -14,6 +14,7 @@ class HistoryController extends Controller
 
         $tickets = Ticket::with(['ticket_details.item'])
                         ->whereDate('created_at', $today)
+                        ->where('status', 1) // Hanya ambil tiket yang sudah selesai
                         ->get();
 
         $riwayat = $today->translatedFormat('d F Y');

@@ -20,18 +20,19 @@ public function index(Request $request)
     $totalPrice = 0;
     $active = $request->active ?? 'ticket';
 
-    if ($request->ticket_id) {
-        $ticket = Ticket::with('ticket_details.item')->find($request->ticket_id);
+    // Ambil tiket dengan status 0 (belum selesai)
+    $ticket = Ticket::with('ticket_details.item')
+        ->where('status', 0)
+        ->first();
 
-        if ($ticket) {
-            $ticketDetails = $ticket->ticket_details;
+    if ($ticket) {
+        $ticketDetails = $ticket->ticket_details;
 
-            $totalQuantity = $ticketDetails->sum('item_quantity');
+        $totalQuantity = $ticketDetails->sum('item_quantity');
 
-            $totalPrice = $ticketDetails->sum(function ($detail) {
-                return ($detail->item_price ?? 0) * ($detail->item_quantity ?? 0);
-            });
-        }
+        $totalPrice = $ticketDetails->sum(function ($detail) {
+            return ($detail->item_price ?? 0) * ($detail->item_quantity ?? 0);
+        });
     }
 
     return view('admin.index', [
@@ -47,22 +48,10 @@ public function index(Request $request)
 
     function add(Request $request)
     {
-        $perPage = 15; // jumlah item per halaman
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-
         $allItems = \DB::table('items')
             ->select('items.id', 'items.item_name', 'items.selling_price')
+            ->where('items.item_status', 1)
             ->get();
-
-        $currentItems = $allItems->slice(($currentPage - 1) * $perPage, $perPage)->values();
-
-        $items = new LengthAwarePaginator(
-            $currentItems,
-            $allItems->count(),
-            $perPage,
-            $currentPage,
-            ['path' => $request->url(), 'query' => $request->query()]
-        );
 
         $details = \DB::table('details')
             ->select('item_id', 'colour', 'size')
@@ -76,7 +65,7 @@ public function index(Request $request)
             ->first();
 
         return view('admin.add', [
-            'items' => $items,
+            'items' => $allItems,
             'details' => $details,
             'ticket' => $ticket,
             'totalQuantity' => $totals->total_quantity ?? 0,
@@ -101,10 +90,7 @@ public function index(Request $request)
             'status' => 0,
         ]);
 
-    return redirect()->route('tickets.index', [
-        'ticket_id' => $ticket->id,
-        'active' => 'ticket'
-        ]);
+    return redirect()->route('tickets.index');
     }
 
     public function confirm($id)
