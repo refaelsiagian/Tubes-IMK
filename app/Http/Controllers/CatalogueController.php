@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
-// use App\Models\Product;
+use App\Models\Item;
+use App\Models\Detail;
+use App\Models\Image;
 
 class CatalogueController extends Controller
 {
@@ -34,9 +36,20 @@ class CatalogueController extends Controller
 
     public function collection()
     {
-        // Menampilkan halaman koleksi
-        return view('catalogue.collection');
+        $items = Item::with(['images' => function ($query) {
+            $query->whereNull('colour')->orderBy('id'); // Ambil yang colour null & urut
+        }])->where('item_status', 1)->get();
+
+        // Bantuin ambil 2 gambar yang ada
+        foreach ($items as $item) {
+            $images = $item->images->filter(fn($img) => $img->image_name !== null)->values(); // Filter yang ada
+            $item->main_image = $images->get(0) ? 'storage/' . $images->get(0)->image_name : 'catalogue/images/products/orange-1.jpg';
+            $item->hover_image = $images->get(1) ? 'storage/' . $images->get(1)->image_name : 'catalogue/images/products/white-1.jpg';
+        }
+
+        return view('catalogue.collection', compact('items'));
     }
+
 
     public function productDetail($slug)
     {

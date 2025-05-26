@@ -68,9 +68,6 @@
                             </div>
 
                             <div class="row mb-3">
-                                @php
-                                    $image_general = $image_general->sortByDesc(fn($img) => $img->image_name !== null);
-                                @endphp
                                 <label class="form-label"><b>Umum</b> (Maks. 5)</label>
                                 @foreach($image_general as $image)
                                     <div class="col-md-4">
