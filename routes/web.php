@@ -11,6 +11,7 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\CatalogueController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,11 +64,16 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
-Route::get('/about', function () {
-    return view('about');
-});
 
 Route::get('/unauthorized', function () {
     return view('unauthorized');
 })->name('unauthorized');
 
+
+// Public routes
+Route::get('/', [CatalogueController::class, 'index'])->name('catalogue.index');
+Route::get('/category', [CatalogueController::class, 'categories'])->name('catalogue.categories');
+Route::get('/category/{slug}', [CatalogueController::class, 'categoryDetail'])->name('catalogue.categoryDetail');
+Route::get('/collection', [CatalogueController::class, 'collection'])->name('catalogue.collection');
+Route::get('/product/{slug}', [CatalogueController::class, 'productDetail'])->name('catalogue.productDetail');
+Route::get('/about', [CatalogueController::class, 'about'])->name('catalogue.about');
