@@ -50,7 +50,7 @@
                             </div>
                             <div class="card-product-info">
                                 <a href="produk.html" class="title link">{{ $item->item_name }}</a>
-                                <span class="price">Rp{{ $item->selling_price }}</span>
+                                <span class="price">Rp{{ number_format($item->selling_price, 0, ',', '.') }}</span>
                             </div>
                         </div>
                     @endforeach

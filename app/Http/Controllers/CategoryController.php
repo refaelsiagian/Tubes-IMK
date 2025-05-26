@@ -28,6 +28,8 @@ class CategoryController extends Controller
     {
         $request->validate([
             'category_name' => 'required|max:255',
+            'category_description' => 'required|max:255',
+            'category_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // Optional image validation
         ]);
         
         //check if category name already exists
@@ -40,11 +42,27 @@ class CategoryController extends Controller
         $categoryName = ucwords(strtolower($request->category_name));
         $request->merge(['category_name' => $categoryName]);
 
-        // Create a slug from the category name
-        $slug = str_replace(' ', '-', strtolower($request->category_name));
-        $request->merge(['category_slug' => $slug]);
+        // Buat slug dan nama baru
+        $categoryName = ucwords(strtolower($request->category_name));
+        $slug = str_replace(' ', '-', strtolower($categoryName));
 
-        Category::create($request->all());
+        // Simpan image kalau ada
+        $imagePath = null;
+        if ($request->hasFile('category_image')) {
+            $imagePath = $request->file('category_image')->store('categories', 'public');
+        }
+
+        // Buat data array
+        $data = [
+            'category_name' => $categoryName,
+            'category_slug' => $slug,
+            'category_description' => $request->category_description,
+            'category_image' => $imagePath,
+        ];
+
+        // Simpan data
+        Category::create($data);
+
 
         return redirect()->route('categories.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
@@ -74,34 +92,52 @@ class CategoryController extends Controller
     {
         $request->validate([
             'category_name' => 'required|max:255',
+            'category_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $category = Category::findOrFail($id);
-        
-        // Check if the category name is not changed
-        if ($category->category_name === $request->category_name) {
+
+        // Format nama category baru
+        $categoryName = ucwords(strtolower($request->category_name));
+        $slug = str_replace(' ', '-', strtolower($categoryName));
+
+        // Cek jika nama category tidak berubah
+        if ($category->category_name === $categoryName && !$request->hasFile('category_image')) {
             return redirect()->route('categories.index')->with('success', 'Kategori tidak ada perubahan.');
         }
 
-        // Check if the category name already exists
-        if ($category->category_name !== $request->category_name) {
-            $existingCategory = Category::where('category_name', $request->category_name)->first();
-            if ($existingCategory) {
-                return redirect()->route('categories.index')->with('error', 'Kategori sudah ada.');
-            }
+        // Cek apakah category name sudah ada (exclude diri sendiri)
+        $existingCategory = Category::where('category_name', $categoryName)
+                                    ->where('id', '!=', $category->id)
+                                    ->first();
+        if ($existingCategory) {
+            return redirect()->route('categories.index')->with('error', 'Kategori sudah ada.');
         }
 
-        // Make the category name always in capital case
-        $categoryName = ucwords(strtolower($request->category_name));
-        $request->merge(['category_name' => $categoryName]);
+        // Siapkan data untuk update
+        $data = [
+            'category_name' => $categoryName,
+            'category_slug' => $slug,
+        ];
 
-        $slug = str_replace(' ', '-', strtolower($request->category_name));
-        $request->merge(['category_slug' => $slug]);
+        // Handle image upload jika ada
+        if ($request->hasFile('category_image')) {
+            // Hapus image lama jika ada
+            if ($category->category_image && \Storage::disk('public')->exists($category->category_image)) {
+                \Storage::disk('public')->delete($category->category_image);
+            }
 
-        $category->update($request->all());
+            // Simpan image baru
+            $imagePath = $request->file('category_image')->store('categories', 'public');
+            $data['category_image'] = $imagePath;
+        }
+
+        // Update data
+        $category->update($data);
 
         return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui.');
     }
+
 
     /**
      * Remove the specified resource from storage.

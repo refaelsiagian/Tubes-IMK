@@ -66,7 +66,25 @@
                     <div class="col-12">
                         <div dir="ltr" class="swiper tf-sw-collection" data-preview="4" data-tablet="2" data-mobile="2" data-space-lg="30" data-space-md="30" data-space="15" data-loop="false" data-auto-play="false">
                             <div class="swiper-wrapper">
-                                <div class="swiper-slide" lazy="true">
+                                @foreach($categories as $category)
+                                    <div class="swiper-slide" lazy="true">
+                                        <div class="collection-item style-left hover-img">
+                                            <div class="collection-inner">
+                                                <a href="{{ route('catalogue.categories', $category->category_slug) }}" class="collection-image img-style">
+                                                    @if($category->category_image)
+                                                    <img class="lazyload" data-src="{{ asset('storage/' . $category->category_image) }}" src="{{ asset('storage/' . $category->category_image) }}" alt="collection-img">
+                                                    @else
+                                                    <img class="lazyload" data-src="{{ asset('catalogue/images/collections/collection-17.jpg') }}" src="{{ asset('catalogue/images/collections/default-collection.jpg') }}" alt="collection-img">
+                                                    @endif
+                                                </a>
+                                                <div class="collection-content">
+                                                    <a href="{{ route('catalogue.categories', $category->category_slug) }}" class="tf-btn collection-title hover-icon fs-15"><span>{{ $category->category_name }}</span><i class="icon icon-arrow1-top-left"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                                {{-- <div class="swiper-slide" lazy="true">
                                     <div class="collection-item style-left hover-img">
                                         <div class="collection-inner">
                                             <a href="#" class="collection-image img-style">
@@ -137,7 +155,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>

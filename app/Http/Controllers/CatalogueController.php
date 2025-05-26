@@ -12,8 +12,12 @@ class CatalogueController extends Controller
 {
     public function index()
     {
+        $categories = Category::withCount('items')->get();
         // Menampilkan homepage
-        return view('catalogue.index');
+        return view('catalogue.index', [
+            'categories' => $categories,
+            'active' => 'home',
+        ]);
     }
 
     public function categories()
