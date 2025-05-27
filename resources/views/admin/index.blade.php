@@ -63,7 +63,7 @@
                                             <td>{{ $detail->item_quantity }}</td>
                                             <td>Rp{{ number_format(($detail->item_price ?? 0) * $detail->item_quantity, 0, ',', '.') }}</td>
                                             <td>
-                                                <form action="{{ route('ticket.item.destroy', ['ticket' => $ticket->id, 'item' => $detail->item_id]) }}"
+                                                <form action="{{ route('ticket.item.destroy', ['ticket' => $ticket->id, 'item' => $detail->item_id, 'id' => $detail->id]) }}"
                                                     method="POST"
                                                     onsubmit="return confirm('Yakin ingin menghapus item ini?')">
                                                     @csrf
