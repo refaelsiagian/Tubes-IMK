@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ticket extends Model
 {
-    protected $fillable = ['id', 'ticket_date', 'total_amount', 'status'];
+    protected $fillable = ['id', 'admin_id', 'ticket_date', 'total_amount', 'status'];
 
     public $incrementing = false; // Karena kamu pakai custom ID string
 
