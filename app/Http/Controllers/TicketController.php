@@ -157,6 +157,19 @@ public function index(Request $request)
 
         $subtotal = $validated['item_price'] * $validated['item_quantity'];
 
+            $existing = TicketDetail::where('ticket_id', $validated['ticket_id'])
+        ->where('item_id', $validated['item_id'])
+        ->where('item_colour', $validated['item_colour'])
+        ->where('item_size', $validated['item_size'])
+        ->where('item_price', $validated['item_price'])
+        ->first();
+        
+    if ($existing) {
+        $existing->item_quantity += $validated['item_quantity'];
+        $existing->subtotal = $existing->item_price * $existing->item_quantity;
+        $existing->save();
+        
+     } else {
         TicketDetail::create([
             'ticket_id' => $validated['ticket_id'],
             'item_id' => $validated['item_id'],
@@ -167,14 +180,14 @@ public function index(Request $request)
             'item_quantity' => $validated['item_quantity'],
             'subtotal' => $subtotal,
         ]);
-
+    }
         return redirect()->route('tickets.add')->with('success', 'Item berhasil ditambahkan.');
     }
 
-    public function destroyItem($ticket_id, $item_id)
+    public function destroyItem($ticket_id, $item_id, $id)
     {
         // Hapus satu item dari suatu transaksi
-        TicketDetail::where('ticket_id', $ticket_id)->where('item_id', $item_id)->delete();
+        TicketDetail::where('id', $id)->where('ticket_id', $ticket_id)->where('item_id', $item_id)->delete();
 
         return redirect()->back()->with('success', 'Item berhasil dihapus dari transaksi.');
 }
