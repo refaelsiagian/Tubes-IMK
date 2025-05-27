@@ -85,6 +85,7 @@ public function index(Request $request)
 
         $ticket = Ticket::create([
             'id' => $newNumber,
+            'admin_id' => auth()->user()->id,
             'ticket_date' => now(),
             'total_amount' => 0,
             'status' => 0,

@@ -44,10 +44,10 @@
                     <ul class="menu">
 
                         <li class="sidebar-item">
-                            <a href="#" class="d-flex align-items-center">
-                                <i class="bi bi-person-circle fs-3 me-2"></i> {{-- ikon besar dan kasih margin kanan --}}
+                            <a href="#" class="d-flex align-items-start"> 
+                                <i class="bi bi-person-circle fs-3 me-4 my auto"></i> 
                                 <div class="d-flex flex-column">
-                                    <span class="fw-semibold">{{ auth()->user()->name }} Role: {{ auth()->user()->role }}</span>
+                                    <span class="fw-semibold"> {{ auth()->user()->name }} Role: {{ auth()->user()->role }} </span>
                                     <small class="text-muted">{{ auth()->user()->id }}</small>
                                 </div>
                             </a>
