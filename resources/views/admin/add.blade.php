@@ -11,6 +11,7 @@
 
 <link rel="stylesheet" href="{{ asset('assets/extensions/simple-datatables/style.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/compiled/css/table-datatable.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/extensions/toastify-js/src/toastify.css') }}">
 @endsection
 
 @section('content')
@@ -25,84 +26,81 @@
             <div class="card">
                 <div class="card-content">
                     <div class="card-body">
+                        @if(session('success'))
+                            <div class="alert alert-light-success color-success alert-dismissible fade show mb-3">
+                                {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
                         <table class="table table-striped table-hover" id="table1" style="min-width: 800px; white-space: nowrap;">
-                            <thead>
-                                <tr>
-                                    <th>Nama Barang</th>
-                                    <th>Warna</th>
-                                    <th>Size</th>
-                                    <th>Harga</th>
-                                    <th>Masukkan Jumlah</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($items as $item)
-                                @php
-                                    // Ambil details untuk item ini
-                                    $itemDetails = $details->has($item->id) ? $details[$item->id] : collect();
+                        <thead>
+                            <tr>
+                                <th>Nama Barang</th>
+                                <th>Warna</th>
+                                <th>Size</th>
+                                <th>Harga</th>
+                                <th>Jumlah</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($items as $item)
+                            @php
+                                $itemDetails = $details->has($item->id) ? $details[$item->id] : collect();
+                                $itemColours = $itemDetails->pluck('colour')->filter()->unique();
+                                $itemSizes = $itemDetails->pluck('size')->filter()->unique();
+                            @endphp
+                            <tr>
+                                <td>{{ $item->item_name }}</td>
+                                <td>
+                                    @if ($itemColours->count() > 0)
+                                        <select class="form-select form-colour" data-item-id="{{ $item->id }}">
+                                            <option value="" disabled selected>Pilih Warna</option>
+                                            @foreach ($itemColours as $colour)
+                                                <option value="{{ $colour }}">{{ $colour }}</option>
+                                            @endforeach
+                                        </select>
+                                    @else
+                                        <span>-</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($itemSizes->count() > 0)
+                                        <select class="form-select form-size" data-item-id="{{ $item->id }}">
+                                            <option value="" disabled selected>Pilih Size</option>
+                                            @foreach ($itemSizes as $size)
+                                                <option value="{{ $size }}">{{ $size }}</option>
+                                            @endforeach
+                                        </select>
+                                    @else
+                                        <span>-</span>
+                                    @endif
+                                </td>
+                                <td>{{ number_format($item->selling_price, 0, ',', '.') }}</td>
+                                <td>
+                                    <input type="number" class="form-control form-quantity" data-item-id="{{ $item->id }}" placeholder="Jumlah" min="1">
+                                </td>
+                                <td>
+                                    <button class="btn btn-success btn-add-item" data-item-id="{{ $item->id }}" data-item-name="{{ $item->item_name }}" data-item-price="{{ $item->selling_price }}"><i class="bi bi-plus-circle"></i></button>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
 
-                                    // Ambil warna unik
-                                    $itemColours = $itemDetails->pluck('colour')->filter()->unique();
+                    <!-- Form Hidden di Bawah -->
+                    <form id="addItemForm" action="{{ route('tickets.addItem') }}" method="POST" style="display: none;">
+                        @csrf
+                        <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
+                        <input type="hidden" name="item_id">
+                        <input type="hidden" name="item_name">
+                        <input type="hidden" name="item_price">
+                        <input type="hidden" name="item_colour">
+                        <input type="hidden" name="item_size">
+                        <input type="hidden" name="item_quantity">
+                    </form>
 
-                                    // Ambil size unik
-                                    $itemSizes = $itemDetails->pluck('size')->filter()->unique();
-                                @endphp
-                                <tr>
-                                    <form action="{{ route('tickets.addItem') }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
-                                        <input type="hidden" name="item_id" value="{{ $item->id }}">
-                                        <input type="hidden" name="item_name" value="{{ $item->item_name }}">
-                                        <input type="hidden" name="item_price" value="{{ $item->selling_price }}">
-
-                                        <td>{{ $item->item_name }}</td>{{-- Dropdown warna --}}
-                                        <td>
-                                            @if ($itemColours->count() > 0)
-                                                <select name="item_colour" class="form-select" required>
-                                                    <option value="" disabled selected>Pilih Warna</option>
-                                                    @foreach ($itemColours as $colour)
-                                                        <option value="{{ $colour }}">{{ $colour }}</option>
-                                                    @endforeach
-                                                </select>
-                                            @else
-                                                <input type="hidden" name="item_colour" value="">
-                                                -
-                                            @endif
-                                        </td>
-
-                                        {{-- Dropdown size --}}
-                                        <td>
-                                            @if ($itemSizes->count() > 0)
-                                                <select name="item_size" class="form-select" required>
-                                                    <option value="" disabled selected>Pilih Size</option>
-                                                    @foreach ($itemSizes as $size)
-                                                        <option value="{{ $size }}">{{ $size }}</option>
-                                                    @endforeach
-                                                </select>
-                                            @else
-                                                <input type="hidden" name="item_size" value="">
-                                                -
-                                            @endif
-                                        </td>
-
-                                        <td>{{ number_format($item->selling_price, 0, ',', '.') }}</td>
-
-                                        <td>
-                                            <input type="number" name="item_quantity" class="form-control" placeholder="Jumlah" min="1" required>
-                                        </td>
-
-                                        <td>
-                                            <button type="submit" class="btn btn-success"><i class="bi bi-plus-circle"></i></button>
-                                        </td>
-                                    </form>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        <div class="table-responsive">
-                        </div>
-
+                        
                         <div class="row mt-3">
                             <div class="col-md-12 text-end">
                                 <h6>{{ $totalQuantity ?? 0 }} Item</h6>
@@ -123,7 +121,68 @@
 
 @section('script')
 <script src="{{ asset('assets/extensions/simple-datatables/umd/simple-datatables.js') }}"></script>
-
+<script src="{{ asset('assets/extensions/toastify-js/src/toastify.js') }}"></script>
 <script src="{{ asset('assets/static/js/pages/simple-datatables.js') }}"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.btn-add-item').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const itemId = this.dataset.itemId;
+            const itemName = this.dataset.itemName;
+            const itemPrice = this.dataset.itemPrice;
+
+            const colour = document.querySelector(`.form-colour[data-item-id="${itemId}"]`)?.value || '';
+            const size = document.querySelector(`.form-size[data-item-id="${itemId}"]`)?.value || '';
+            const quantity = document.querySelector(`.form-quantity[data-item-id="${itemId}"]`)?.value || '';
+
+            // Fungsi helper toast
+            const showToast = (message) => {
+                Toastify({
+                    text: message,
+                    duration: 3000,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#f44336", // merah
+                    stopOnFocus: true,
+                }).showToast();
+            };
+
+            // Cek validation per item
+            if (document.querySelector(`.form-colour[data-item-id="${itemId}"]`) && !colour) {
+                showToast('Pilih warna terlebih dahulu.');
+                return;
+            }
+
+            if (document.querySelector(`.form-size[data-item-id="${itemId}"]`) && !size) {
+                showToast('Pilih size terlebih dahulu.');
+                return;
+            }
+
+            if (!quantity || quantity <= 0) {
+                showToast('Masukkan jumlah barang.');
+                return;
+            }
+
+            // Kirim form
+            const form = document.getElementById('addItemForm');
+            form.querySelector('input[name="item_id"]').value = itemId;
+            form.querySelector('input[name="item_name"]').value = itemName;
+            form.querySelector('input[name="item_price"]').value = itemPrice;
+            form.querySelector('input[name="item_colour"]').value = colour;
+            form.querySelector('input[name="item_size"]').value = size;
+            form.querySelector('input[name="item_quantity"]').value = quantity;
+
+            form.submit();
+        });
+    });
+});
+
+</script>
+
+
+
 
 @endsection
