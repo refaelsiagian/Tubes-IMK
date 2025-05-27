@@ -48,10 +48,7 @@ public function index(Request $request)
 
     function add(Request $request)
     {
-        $allItems = \DB::table('items')
-            ->select('items.id', 'items.item_name', 'items.selling_price')
-            ->where('items.item_status', 1)
-            ->get();
+        $allItems = Item::all();
 
         $details = \DB::table('details')
             ->select('item_id', 'colour', 'size')

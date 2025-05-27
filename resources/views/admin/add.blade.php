@@ -39,6 +39,7 @@
                                     <th>Warna</th>
                                     <th>Size</th>
                                     <th>Harga</th>
+                                    <th>Stok</th>
                                     <th>Jumlah</th>
                                     <th>Action</th>
                                 </tr>
@@ -77,6 +78,17 @@
                                         @endif
                                     </td>
                                     <td>{{ number_format($item->selling_price, 0, ',', '.') }}</td>
+                                    <td class="td-stock" data-item-id="{{ $item->id }}"> 
+                                        @if ($itemColours->count() === 0 && $itemSizes->count() === 0)
+                                            {{-- Tidak ada varian, langsung tampilkan stok --}}
+                                            @php
+                                                $stock = $itemDetails->first()?->stock ?? '-';
+                                            @endphp
+                                            <span class="stock-value">{{ $item->details[0]->stock }}</span>
+                                        @else
+                                            <span class="stock-value">-</span>
+                                        @endif
+                                    </td>
                                     <td>
                                         <input type="number" class="form-control form-quantity" data-item-id="{{ $item->id }}" placeholder="Jumlah" min="1">
                                     </td>
@@ -126,6 +138,27 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    function updateStock(itemId) {
+        const colour = document.querySelector(`select.form-colour[data-item-id="${itemId}"]`)?.value;
+        const size = document.querySelector(`select.form-size[data-item-id="${itemId}"]`)?.value;
+
+        fetch(`/get-stock?item_id=${itemId}&colour=${encodeURIComponent(colour ?? '')}&size=${encodeURIComponent(size ?? '')}`)
+            .then(response => response.json())
+            .then(data => {
+                const stockElement = document.querySelector(`.td-stock[data-item-id="${itemId}"] .stock-value`);
+                stockElement.textContent = data.stock;
+            });
+    }
+
+    // Update stock saat select diubah
+    document.querySelectorAll('select.form-colour, select.form-size').forEach(select => {
+        select.addEventListener('change', function() {
+            const itemId = this.dataset.itemId;
+            updateStock(itemId);
+        });
+    });
+
+    // Validasi stok saat tambah item
     document.querySelectorAll('.btn-add-item').forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
@@ -134,29 +167,30 @@ document.addEventListener('DOMContentLoaded', function() {
             const itemName = this.dataset.itemName;
             const itemPrice = this.dataset.itemPrice;
 
-            const colour = document.querySelector(`.form-colour[data-item-id="${itemId}"]`)?.value || '';
-            const size = document.querySelector(`.form-size[data-item-id="${itemId}"]`)?.value || '';
-            const quantity = document.querySelector(`.form-quantity[data-item-id="${itemId}"]`)?.value || '';
+            const colour = document.querySelector(`select.form-colour[data-item-id="${itemId}"]`)?.value || '';
+            const size = document.querySelector(`select.form-size[data-item-id="${itemId}"]`)?.value || '';
+            const quantity = document.querySelector(`input.form-quantity[data-item-id="${itemId}"]`)?.value || '';
 
-            // Fungsi helper toast
+            const stockText = document.querySelector(`.td-stock[data-item-id="${itemId}"] .stock-value`)?.textContent || '0';
+            const stock = parseInt(stockText) || 0;
+
             const showToast = (message) => {
                 Toastify({
                     text: message,
                     duration: 3000,
                     gravity: "top",
                     position: "center",
-                    backgroundColor: "#f44336", // merah
+                    backgroundColor: "#f44336",
                     stopOnFocus: true,
                 }).showToast();
             };
 
-            // Cek validation per item
-            if (document.querySelector(`.form-colour[data-item-id="${itemId}"]`) && !colour) {
+            if (document.querySelector(`select.form-colour[data-item-id="${itemId}"]`) && !colour) {
                 showToast('Pilih warna terlebih dahulu.');
                 return;
             }
 
-            if (document.querySelector(`.form-size[data-item-id="${itemId}"]`) && !size) {
+            if (document.querySelector(`select.form-size[data-item-id="${itemId}"]`) && !size) {
                 showToast('Pilih size terlebih dahulu.');
                 return;
             }
@@ -166,7 +200,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Kirim form
+            if (quantity > stock) {
+                showToast(`Jumlah melebihi stok. Stok tersedia: ${stock}`);
+                return;
+            }
+
+            // Kirim form (atau AJAX sesuai logika kamu)
             const form = document.getElementById('addItemForm');
             form.querySelector('input[name="item_id"]').value = itemId;
             form.querySelector('input[name="item_name"]').value = itemName;
@@ -181,6 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 </script>
+
 
 
 
