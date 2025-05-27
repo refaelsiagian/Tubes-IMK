@@ -9,12 +9,10 @@ use App\Models\Ticket;
 
 class TicketDetail extends Model
 {
-    public $incrementing = false; 
-    protected $primaryKey = null; 
 
     protected $table = 'ticket_details';
     protected $fillable = [
-        'ticket_id', 'item_id', 'item_name', 'item_colour', 'item_size',
+        'id', 'ticket_id', 'item_id', 'item_name', 'item_colour', 'item_size',
         'item_price', 'item_quantity', 'subtotal'
     ];
 

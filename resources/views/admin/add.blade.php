@@ -33,72 +33,72 @@
                             </div>
                         @endif
                         <table class="table table-striped table-hover" id="table1" style="min-width: 800px; white-space: nowrap;">
-                        <thead>
-                            <tr>
-                                <th>Nama Barang</th>
-                                <th>Warna</th>
-                                <th>Size</th>
-                                <th>Harga</th>
-                                <th>Jumlah</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($items as $item)
-                            @php
-                                $itemDetails = $details->has($item->id) ? $details[$item->id] : collect();
-                                $itemColours = $itemDetails->pluck('colour')->filter()->unique();
-                                $itemSizes = $itemDetails->pluck('size')->filter()->unique();
-                            @endphp
-                            <tr>
-                                <td>{{ $item->item_name }}</td>
-                                <td>
-                                    @if ($itemColours->count() > 0)
-                                        <select class="form-select form-colour" data-item-id="{{ $item->id }}">
-                                            <option value="" disabled selected>Pilih Warna</option>
-                                            @foreach ($itemColours as $colour)
-                                                <option value="{{ $colour }}">{{ $colour }}</option>
-                                            @endforeach
-                                        </select>
-                                    @else
-                                        <span>-</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($itemSizes->count() > 0)
-                                        <select class="form-select form-size" data-item-id="{{ $item->id }}">
-                                            <option value="" disabled selected>Pilih Size</option>
-                                            @foreach ($itemSizes as $size)
-                                                <option value="{{ $size }}">{{ $size }}</option>
-                                            @endforeach
-                                        </select>
-                                    @else
-                                        <span>-</span>
-                                    @endif
-                                </td>
-                                <td>{{ number_format($item->selling_price, 0, ',', '.') }}</td>
-                                <td>
-                                    <input type="number" class="form-control form-quantity" data-item-id="{{ $item->id }}" placeholder="Jumlah" min="1">
-                                </td>
-                                <td>
-                                    <button class="btn btn-success btn-add-item" data-item-id="{{ $item->id }}" data-item-name="{{ $item->item_name }}" data-item-price="{{ $item->selling_price }}"><i class="bi bi-plus-circle"></i></button>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            <thead>
+                                <tr>
+                                    <th>Nama Barang</th>
+                                    <th>Warna</th>
+                                    <th>Size</th>
+                                    <th>Harga</th>
+                                    <th>Jumlah</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($items as $item)
+                                @php
+                                    $itemDetails = $details->has($item->id) ? $details[$item->id] : collect();
+                                    $itemColours = $itemDetails->pluck('colour')->filter()->unique();
+                                    $itemSizes = $itemDetails->pluck('size')->filter()->unique();
+                                @endphp
+                                <tr>
+                                    <td>{{ $item->item_name }}</td>
+                                    <td>
+                                        @if ($itemColours->count() > 0)
+                                            <select class="form-select form-colour" data-item-id="{{ $item->id }}">
+                                                <option value="" disabled selected>Pilih Warna</option>
+                                                @foreach ($itemColours as $colour)
+                                                    <option value="{{ $colour }}">{{ $colour }}</option>
+                                                @endforeach
+                                            </select>
+                                        @else
+                                            <span>-</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($itemSizes->count() > 0)
+                                            <select class="form-select form-size" data-item-id="{{ $item->id }}">
+                                                <option value="" disabled selected>Pilih Size</option>
+                                                @foreach ($itemSizes as $size)
+                                                    <option value="{{ $size }}">{{ $size }}</option>
+                                                @endforeach
+                                            </select>
+                                        @else
+                                            <span>-</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ number_format($item->selling_price, 0, ',', '.') }}</td>
+                                    <td>
+                                        <input type="number" class="form-control form-quantity" data-item-id="{{ $item->id }}" placeholder="Jumlah" min="1">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-success btn-add-item" data-item-id="{{ $item->id }}" data-item-name="{{ $item->item_name }}" data-item-price="{{ $item->selling_price }}"><i class="bi bi-plus-circle"></i></button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
 
-                    <!-- Form Hidden di Bawah -->
-                    <form id="addItemForm" action="{{ route('tickets.addItem') }}" method="POST" style="display: none;">
-                        @csrf
-                        <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
-                        <input type="hidden" name="item_id">
-                        <input type="hidden" name="item_name">
-                        <input type="hidden" name="item_price">
-                        <input type="hidden" name="item_colour">
-                        <input type="hidden" name="item_size">
-                        <input type="hidden" name="item_quantity">
-                    </form>
+                        <!-- Form Hidden di Bawah -->
+                        <form id="addItemForm" action="{{ route('tickets.addItem') }}" method="POST" style="display: none;">
+                            @csrf
+                            <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
+                            <input type="hidden" name="item_id">
+                            <input type="hidden" name="item_name">
+                            <input type="hidden" name="item_price">
+                            <input type="hidden" name="item_colour">
+                            <input type="hidden" name="item_size">
+                            <input type="hidden" name="item_quantity">
+                        </form>
 
                         
                         <div class="row mt-3">
