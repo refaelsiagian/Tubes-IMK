@@ -57,7 +57,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/tickets/{id}/cancel', [TicketController::class, 'cancel'])->name('tickets.cancel');
         Route::post('/tickets/{ticket}/confirm', [TicketController::class, 'confirm'])->name('tickets.confirm');
         Route::post('/tickets/add-item', [TicketController::class, 'addItem'])->name('tickets.addItem');
-        Route::delete('/ticket/{ticket}/item/{item}', [TicketController::class, 'destroyItem'])->name('ticket.item.destroy');
+        Route::delete('/ticket/{ticket}/item/{item}/{id}', [TicketController::class, 'destroyItem'])->name('ticket.item.destroy');
         
         Route::get('/info', [InfoController::class, 'index'])->name('admin.info');
         Route::get('/history', [HistoryController::class, 'index'])->name('admin.history');
