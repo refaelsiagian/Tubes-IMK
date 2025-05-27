@@ -12,6 +12,7 @@ use App\Http\Controllers\InfoController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\CatalogueController;
+use App\Http\Controllers\StockController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,6 +65,7 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
+Route::get('/get-stock', [StockController::class, 'getStock']);
 
 Route::get('/unauthorized', function () {
     return view('unauthorized');
