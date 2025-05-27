@@ -66,78 +66,24 @@
                     <div class="col-12">
                         <div dir="ltr" class="swiper tf-sw-collection" data-preview="4" data-tablet="2" data-mobile="2" data-space-lg="30" data-space-md="30" data-space="15" data-loop="false" data-auto-play="false">
                             <div class="swiper-wrapper">
-                                <div class="swiper-slide" lazy="true">
-                                    <div class="collection-item style-left hover-img">
-                                        <div class="collection-inner">
-                                            <a href="#" class="collection-image img-style">
-                                                <img class="lazyload" data-src="{{ asset('catalogue/images/collections/collection-17.jpg')}}" src="{{ asset('catalogue/images/collections/collection-17.jpg')}}" alt="collection-img">
-                                            </a>
-                                            <div class="collection-content">
-                                                <a href="detail-categories.html" class="tf-btn collection-title hover-icon fs-15"><span>Pashmina</span><i class="icon icon-arrow1-top-left"></i></a>
+                                @foreach($categories as $category)
+                                    <div class="swiper-slide" lazy="true">
+                                        <div class="collection-item style-left hover-img">
+                                            <div class="collection-inner">
+                                                <a href="{{ route('catalogue.categoryDetail', $category->category_slug) }}" class="collection-image img-style">
+                                                    @if($category->category_image)
+                                                    <img class="lazyload" data-src="{{ asset('storage/' . $category->category_image) }}" src="{{ asset('storage/' . $category->category_image) }}" alt="collection-img">
+                                                    @else
+                                                    <img class="lazyload" data-src="{{ asset('catalogue/images/collections/collection-17.jpg') }}" src="{{ asset('catalogue/images/collections/default-collection.jpg') }}" alt="collection-img">
+                                                    @endif
+                                                </a>
+                                                <div class="collection-content">
+                                                    <a href="{{ route('catalogue.categoryDetail', $category->category_slug) }}" class="tf-btn collection-title hover-icon fs-15"><span>{{ $category->category_name }}</span><i class="icon icon-arrow1-top-left"></i></a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="swiper-slide" lazy="true">
-                                    <div class="collection-item style-left hover-img">
-                                        <div class="collection-inner">
-                                            <a href="#" class="collection-image img-style">
-                                                <img class="lazyload" data-src="{{ asset('catalogue/images/collections/collection-17.jpg')}}" src="{{ asset('catalogue/images/collections/collection-17.jpg')}}" alt="collection-img">
-                                            </a>
-                                            <div class="collection-content">
-                                                <a href="detail-categories.html" class="tf-btn collection-title hover-icon fs-15"><span>Pashmina</span><i class="icon icon-arrow1-top-left"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide" lazy="true">
-                                    <div class="collection-item style-left hover-img">
-                                        <div class="collection-inner">
-                                            <a href="#" class="collection-image img-style">
-                                                <img class="lazyload" data-src="{{ asset('catalogue/images/collections/collection-17.jpg')}}" src="{{ asset('catalogue/images/collections/collection-17.jpg')}}" alt="collection-img">
-                                            </a>
-                                            <div class="collection-content">
-                                                <a href="detail-categories.html" class="tf-btn collection-title hover-icon fs-15"><span>Pashmina</span><i class="icon icon-arrow1-top-left"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide" lazy="true">
-                                    <div class="collection-item style-left hover-img">
-                                        <div class="collection-inner">
-                                            <a href="#" class="collection-image img-style">
-                                                <img class="lazyload" data-src="{{ asset('catalogue/images/collections/collection-17.jpg')}}" src="{{ asset('catalogue/images/collections/collection-17.jpg')}}" alt="collection-img">
-                                            </a>
-                                            <div class="collection-content">
-                                                <a href="detail-categories.html" class="tf-btn collection-title hover-icon fs-15"><span>Pashmina</span><i class="icon icon-arrow1-top-left"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide" lazy="true">
-                                    <div class="collection-item style-left hover-img">
-                                        <div class="collection-inner">
-                                            <a href="#" class="collection-image img-style">
-                                                <img class="lazyload" data-src="{{ asset('catalogue/images/collections/collection-17.jpg')}}" src="{{ asset('catalogue/images/collections/collection-17.jpg')}}" alt="collection-img">
-                                            </a>
-                                            <div class="collection-content">
-                                                <a href="detail-categories.html" class="tf-btn collection-title hover-icon fs-15"><span>Pashmina</span><i class="icon icon-arrow1-top-left"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide" lazy="true">
-                                    <div class="collection-item style-left hover-img">
-                                        <div class="collection-inner">
-                                            <a href="#" class="collection-image img-style">
-                                                <img class="lazyload" data-src="{{ asset('catalogue/images/collections/collection-17.jpg')}}" src="{{ asset('catalogue/images/collections/collection-17.jpg')}}" alt="collection-img">
-                                            </a>
-                                            <div class="collection-content">
-                                                <a href="detail-categories.html" class="tf-btn collection-title hover-icon fs-15"><span>Pashmina</span><i class="icon icon-arrow1-top-left"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -155,22 +101,24 @@
                 </div>
                 <div class="grid-layout loadmore-item wow fadeInUp" data-wow-delay="0s" data-grid="grid-4">
                     <!-- card product 1 -->
+                    @foreach($bests as $item)
                     <div class="card-product fl-item">
                         <div class="card-product-wrapper">
-                            <a href="produk.html" class="product-img">
-                                <img class="lazyload img-product" data-src="images/products/orange-1.jpg" src="images/products/orange-1.jpg" alt="image-product">
-                                <img class="lazyload img-hover" data-src="images/products/white-1.jpg" src="images/products/white-1.jpg" alt="image-product">
+                            <a href="{{ route('catalogue.productDetail', $item->item_slug) }}" class="product-img">
+                                <img class="lazyload img-product" data-src="{{ asset($item->main_image) }}" src="{{ asset($item->main_image) }}" alt="image-product">
+                                <img class="lazyload img-hover" data-src="{{ asset($item->hover_image) }}" src="{{ asset($item->hover_image) }}" alt="image-product">
                             </a>
                             <div class="click-here">
                                 <span>Lihat Produk</span>
                             </div>
                         </div>
                         <div class="card-product-info">
-                            <a href="produk.html" class="title link">Ribbed Tank Top</a>
-                            <span class="price">$16.95</span>
+                            <a href="{{ route('catalogue.productDetail', $item->item_slug) }}" class="title link">{{ $item->item_name }}</a>
+                            <span class="price">Rp{{ number_format($item->selling_price, 0, ',', '.') }}</span>
                         </div>
                     </div>
-                    <!-- card product 2 -->
+                    @endforeach
+                    {{-- <!-- card product 2 -->
                     <div class="card-product fl-item">
                         <div class="card-product-wrapper">
                             <a href="#" class="product-img">
@@ -346,7 +294,7 @@
                             <span class="price">$18.95</span>
                             
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="tf-pagination-wrap view-more-button text-center">
                     <button class="tf-btn-loading tf-loading-default style-2 btn-loadmore "><span class="text">Load more</span></button>
@@ -397,7 +345,7 @@
         </section>
         <!-- /brand -->
 
-        <!-- Shop Gram -->
+        {{-- <!-- Shop Gram -->
         <section class="flat-spacing-7">
             <div class="container">
                 <div class="flat-title wow fadeInUp" data-wow-delay="0s">
@@ -448,7 +396,7 @@
                 </div>
             </div>
         </section>
-        <!-- /Shop Gram -->
+        <!-- /Shop Gram --> --}}
 
 @endsection
      

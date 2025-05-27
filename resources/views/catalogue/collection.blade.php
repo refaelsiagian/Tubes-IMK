@@ -37,130 +37,27 @@
                     <div class="tf-control-sorting d-flex justify-content-end"></div>
                 </div>
                 <div class="grid-layout wrapper-shop" data-grid="grid-4">
-                    <!-- card product 1 -->
-                    <div class="card-product fl-item">
-                        <div class="card-product-wrapper">
-                            <a href="produk.html" class="product-img">
-                                <img class="lazyload img-product" data-src="{{ asset('catalogue/images/products/orange-1.jpg')}}" src="{{ asset('catalogue/images/products/orange-1.jpg')}}" alt="image-product">
-                                <img class="lazyload img-hover" data-src="{{ asset('catalogue/images/products/white-1.jpg')}}" src="{{ asset('catalogue/images/products/white-1.jpg')}}" alt="image-product">
-                            </a>
-                            <div class="click-here">
-                                <span>Lihat Produk</span>
+                    @foreach($items as $item)
+                        <div class="card-product fl-item">
+                            <div class="card-product-wrapper">
+                                <a href="{{ route('catalogue.productDetail', $item->item_slug) }}" class="product-img">
+                                    <img class="lazyload img-product" data-src="{{ asset($item->main_image) }}" src="{{ asset($item->main_image) }}" alt="image-product">
+                                    <img class="lazyload img-hover" data-src="{{ asset($item->hover_image) }}" src="{{ asset($item->hover_image) }}" alt="image-product">
+                                </a>
+                                <div class="click-here">
+                                    <span>Lihat Produk</span>
+                                </div>
+                            </div>
+                            <div class="card-product-info">
+                                <a href="{{ route('catalogue.productDetail', $item->item_slug) }}" class="title link">{{ $item->item_name }}</a>
+                                <span class="price">Rp{{ number_format($item->selling_price, 0, ',', '.') }}</span>
                             </div>
                         </div>
-                        <div class="card-product-info">
-                            <a href="produk.html" class="title link">Ribbed Tank Top</a>
-                            <span class="price">$16.95</span>
-                        </div>
-                    </div>
-                    <div class="card-product fl-item">
-                        <div class="card-product-wrapper">
-                            <a href="produk.html" class="product-img">
-                                <img class="lazyload img-product" data-src="{{ asset('catalogue/images/products/orange-1.jpg')}}" src="{{ asset('catalogue/images/products/orange-1.jpg')}}" alt="image-product">
-                                <img class="lazyload img-hover" data-src="{{ asset('catalogue/images/products/white-1.jpg')}}" src="{{ asset('catalogue/images/products/white-1.jpg')}}" alt="image-product">
-                            </a>
-                            <div class="click-here">
-                                <span>Lihat Produk</span>
-                            </div>
-                        </div>
-                        <div class="card-product-info">
-                            <a href="produk.html" class="title link">Ribbed Tank Top</a>
-                            <span class="price">$16.95</span>
-                        </div>
-                    </div>
-                    <div class="card-product fl-item">
-                        <div class="card-product-wrapper">
-                            <a href="produk.html" class="product-img">
-                                <img class="lazyload img-product" data-src="{{ asset('catalogue/images/products/orange-1.jpg')}}" src="{{ asset('catalogue/images/products/orange-1.jpg')}}" alt="image-product">
-                                <img class="lazyload img-hover" data-src="{{ asset('catalogue/images/products/white-1.jpg')}}" src="{{ asset('catalogue/images/products/white-1.jpg')}}" alt="image-product">
-                            </a>
-                            <div class="click-here">
-                                <span>Lihat Produk</span>
-                            </div>
-                        </div>
-                        <div class="card-product-info">
-                            <a href="produk.html" class="title link">Ribbed Tank Top</a>
-                            <span class="price">$16.95</span>
-                        </div>
-                    </div>
-                    <div class="card-product fl-item">
-                        <div class="card-product-wrapper">
-                            <a href="produk.html" class="product-img">
-                                <img class="lazyload img-product" data-src="{{ asset('catalogue/images/products/orange-1.jpg')}}" src="{{ asset('catalogue/images/products/orange-1.jpg')}}" alt="image-product">
-                                <img class="lazyload img-hover" data-src="{{ asset('catalogue/images/products/white-1.jpg')}}" src="{{ asset('catalogue/images/products/white-1.jpg')}}" alt="image-product">
-                            </a>
-                            <div class="click-here">
-                                <span>Lihat Produk</span>
-                            </div>
-                        </div>
-                        <div class="card-product-info">
-                            <a href="produk.html" class="title link">Ribbed Tank Top</a>
-                            <span class="price">$16.95</span>
-                        </div>
-                    </div>
-                    <div class="card-product fl-item">
-                        <div class="card-product-wrapper">
-                            <a href="produk.html" class="product-img">
-                                <img class="lazyload img-product" data-src="{{ asset('catalogue/images/products/orange-1.jpg')}}" src="{{ asset('catalogue/images/products/orange-1.jpg')}}" alt="image-product">
-                                <img class="lazyload img-hover" data-src="{{ asset('catalogue/images/products/white-1.jpg')}}" src="{{ asset('catalogue/images/products/white-1.jpg')}}" alt="image-product">
-                            </a>
-                            <div class="click-here">
-                                <span>Lihat Produk</span>
-                            </div>
-                        </div>
-                        <div class="card-product-info">
-                            <a href="produk.html" class="title link">Ribbed Tank Top</a>
-                            <span class="price">$16.95</span>
-                        </div>
-                    </div>
-                    <div class="card-product fl-item">
-                        <div class="card-product-wrapper">
-                            <a href="produk.html" class="product-img">
-                                <img class="lazyload img-product" data-src="{{ asset('catalogue/images/products/orange-1.jpg')}}" src="{{ asset('catalogue/images/products/orange-1.jpg')}}" alt="image-product">
-                                <img class="lazyload img-hover" data-src="{{ asset('catalogue/images/products/white-1.jpg')}}" src="{{ asset('catalogue/images/products/white-1.jpg')}}" alt="image-product">
-                            </a>
-                            <div class="click-here">
-                                <span>Lihat Produk</span>
-                            </div>
-                        </div>
-                        <div class="card-product-info">
-                            <a href="produk.html" class="title link">Ribbed Tank Top</a>
-                            <span class="price">$16.95</span>
-                        </div>
-                    </div>
-                    <div class="card-product fl-item">
-                        <div class="card-product-wrapper">
-                            <a href="produk.html" class="product-img">
-                                <img class="lazyload img-product" data-src="{{ asset('catalogue/images/products/orange-1.jpg')}}" src="{{ asset('catalogue/images/products/orange-1.jpg')}}" alt="image-product">
-                                <img class="lazyload img-hover" data-src="{{ asset('catalogue/images/products/white-1.jpg')}}" src="{{ asset('catalogue/images/products/white-1.jpg')}}" alt="image-product">
-                            </a>
-                            <div class="click-here">
-                                <span>Lihat Produk</span>
-                            </div>
-                        </div>
-                        <div class="card-product-info">
-                            <a href="produk.html" class="title link">Ribbed Tank Top</a>
-                            <span class="price">$16.95</span>
-                        </div>
-                    </div>
-                    <div class="card-product fl-item">
-                        <div class="card-product-wrapper">
-                            <a href="produk.html" class="product-img">
-                                <img class="lazyload img-product" data-src="{{ asset('catalogue/images/products/orange-1.jpg')}}" src="{{ asset('catalogue/images/products/orange-1.jpg')}}" alt="image-product">
-                                <img class="lazyload img-hover" data-src="{{ asset('catalogue/images/products/white-1.jpg')}}" src="{{ asset('catalogue/images/products/white-1.jpg')}}" alt="image-product">
-                            </a>
-                            <div class="click-here">
-                                <span>Lihat Produk</span>
-                            </div>
-                        </div>
-                        <div class="card-product-info">
-                            <a href="produk.html" class="title link">Ribbed Tank Top</a>
-                            <span class="price">$16.95</span>
-                        </div>
-                    </div>
+                    @endforeach
+
                 </div>
 
-        <!-- pagination -->
+                {{-- <!-- pagination -->
                 <ul class="tf-pagination-wrap tf-pagination-list">
                     <li class="active">
                         <a href="#" class="pagination-link">1</a>
@@ -179,7 +76,7 @@
                             <span class="icon icon-arrow-right"></span>
                         </a>
                     </li>
-                </ul>
+                </ul> --}}
             </div>
         </section>
         <!-- /Section Product -->
@@ -288,5 +185,6 @@
 @section('script')
 
 <script type="text/javascript" src="js/rangle-slider.js"></script>
+
 
 @endsection

@@ -3,7 +3,6 @@
 @section('style')
     <link rel="stylesheet" href="{{ asset('assets/extensions/filepond/filepond.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/extensions/toastify-js/src/toastify.css') }}">
     <style>
         .readonly {
         background-color: #e9ecef;      /* abu-abu seperti Bootstrap disabled */
@@ -68,9 +67,6 @@
                             </div>
 
                             <div class="row mb-3">
-                                @php
-                                    $image_general = $image_general->sortByDesc(fn($img) => $img->image_name !== null);
-                                @endphp
                                 <label class="form-label"><b>Umum</b> (Maks. 5)</label>
                                 @foreach($image_general as $image)
                                     <div class="col-md-4">

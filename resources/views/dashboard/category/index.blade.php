@@ -1,5 +1,32 @@
 @extends('dashboard.layout.main')
 
+@section('style')
+
+    <link rel="stylesheet" href="{{ asset('assets/extensions/filepond/filepond.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css') }}">
+
+    <style>
+    .lihat-overlay {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(0, 0, 0, 0.4);
+        color: white;
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .lihat-overlay:hover {
+        color: skyblue;
+        background: rgba(0, 0, 0, 0.7);
+    }
+    </style>
+
+@endsection
+
 @section('content')
 
 <div class="page-heading">
@@ -40,7 +67,9 @@
                                     <tr>
                                         <th>No.</th>
                                         <th>Kategori</th>
-                                        <th>Banyak Barang</th>
+                                        <th>Deskripsi</th>
+                                        <th>Jumlah Barang</th>
+                                        <th>Gambar</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -49,8 +78,22 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $category->category_name }}</td>
+                                            <td>{{ $category->category_description }}</td>
                                             <td>{{ $category->items_count }}</td>
                                             <td>
+                                                @if ($category->category_image)
+                                                    <div style="position: relative; display: inline-block;">
+                                                        <img src="{{ asset('storage/' . $category->category_image) }}" alt="Category Image" class="img-fluid" style="max-width: 100px; height: auto;">
+
+                                                        <a href="{{ asset('storage/' . $category->category_image) }}" target="_blank" class="lihat-overlay">
+                                                            Lihat
+                                                        </a>
+                                                    </div>                                                
+                                                @else
+                                                    <span class="text-muted">Tidak ada gambar. Gambar default ditampilkan</span>
+                                                @endif
+                                            </td>
+                                            <td class="gap-2" style="white-space: nowrap">
                                                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editModal{{ $category->id }}">
                                                     Edit
                                                 </button>
@@ -68,15 +111,27 @@
                                                                     <i data-feather="x"></i>
                                                                 </button>
                                                             </div>
-                                                            <form action="{{ route('categories.update', $category->id) }}" method="POST">
+                                                            <form action="{{ route('categories.update', $category->id) }}" method="POST" enctype="multipart/form-data">
                                                                 @csrf
                                                                 @method('PUT')
-                                                                <div class="modal-body">
+                                                                <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
                                                                     <input type="hidden" name="old_category_name" value="{{ $category->category_name }}">
                                                                     <label for="category_name" class="form-label">Kategori</label>
                                                                     <div class="form-group">
                                                                         <input id="category_name" type="text" name="category_name" value="{{ $category->category_name }}" placeholder="Masukkan Kategori"
                                                                             class="form-control" required autofocus>
+                                                                    </div>
+                                                                    <label for="category_description" class="form-label">Deskripsi (Maks. 200 Karakter)</label>
+                                                                    <div class="form-group">
+                                                                        <input id="category_description" type="text" name="category_description" value="{{ $category->category_description }}" placeholder="Masukkan deskripsi"
+                                                                            class="form-control" maxlength="200" required>
+                                                                    </div>
+                                                                    <label for="category_image" class="form-label">Gambar</label>
+                                                                    <div class="form-group">
+                                                                        @if ($category->category_image)
+                                                                        <img src="{{ asset('storage/' . $category->category_image) }}" alt="Category Image" class="img-fluid mt-2 mb-2" style="max-width: 100px;">
+                                                                        @endif
+                                                                        <input type="file" class="image-preview-filepond" name="category_image" data-max-file-size="1MB">
                                                                     </div>
                                                                 </div>
                                                                 <div class="modal-footer">
@@ -153,6 +208,7 @@
 </div>
 
 
+
 <!--Create form Modal -->
 <div class="modal modal-borderless fade text-left" id="inlineForm" tabindex="-1" role="dialog"
     aria-labelledby="myModalLabel33" aria-hidden="true">
@@ -166,13 +222,22 @@
                     <i data-feather="x"></i>
                 </button>
             </div>
-            <form action="{{ route('categories.store') }}" method="POST">
+            <form action="{{ route('categories.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="modal-body">
+                <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
                     <label for="category_name" class="form-label">Kategori</label>
                     <div class="form-group">
                         <input id="category_name" type="text" name="category_name" placeholder="Masukkan Kategori"
                             class="form-control" required autofocus>
+                    </div>
+                    <label for="category_description" class="form-label">Deskripsi (Maks. 200 karakter)</label>
+                    <div class="form-group">
+                        <input id="category_description_add" type="text" name="category_description" placeholder="Masukkan deskripsi"
+                            class="form-control" maxlength="200" required>
+                    </div>
+                    <label for="category_image" class="form-label">Gambar</label>
+                    <div class="form-group">
+                        <input type="file" class="image-preview-filepond" name="category_image" data-max-file-size="1MB" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -194,6 +259,18 @@
 @endsection
 
 @section('script')
+
+<script src="{{ asset('assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js') }}"></script>
+    <script src="{{ asset('assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js') }}"></script>
+    <script src="{{ asset('assets/extensions/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js') }}"></script>
+    <script src="{{ asset('assets/extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js')}}"></script>
+    <script src="{{ asset('assets/extensions/filepond-plugin-image-filter/filepond-plugin-image-filter.min.js')}}"></script>
+    <script src="{{ asset('assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js')}}"></script>
+    <script src="{{ asset('assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js') }}"></script>
+    <script src="{{ asset('assets/extensions/filepond/filepond.js') }}"></script>
+    <script src="{{ asset('assets/static/js/pages/filepond.js') }}"></script>
+    {{-- <script src="{{ asset('assets/extensions/toastify-js/src/toastify.js') }}"></script> --}}
+
 <script>
     // If you want to use tooltips in your project, we suggest initializing them globally
     // instead of a "per-page" level.
@@ -204,4 +281,29 @@
         })
     }, false);
 </script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const categoryInput = document.getElementById('category_description_add');
+    const counter = document.getElementById('category_description_counter');
+
+    categoryInput.addEventListener('input', function() {
+      const length = categoryInput.value.length;
+
+      if (length > 0) {
+        counter.style.display = 'block';
+        counter.textContent = `${length} karakter`;
+      } else {
+        counter.style.display = 'none';
+      }
+    });
+
+    // Optional: jika sudah ada value dari database, langsung munculkan counter
+    if (categoryInput.value.trim().length > 0) {
+      counter.style.display = 'block';
+      counter.textContent = `${categoryInput.value.length} karakter`;
+    }
+  });
+</script>
+
 @endsection

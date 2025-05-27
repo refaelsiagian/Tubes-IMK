@@ -20,13 +20,16 @@
                 <nav class="d-flex justify-content-center navbar-custom">
                     <ul class="nav gap-4">
                         <li class="nav-item">
-                            <a href="index.html" class="nav-link">Beranda</a>
+                            <a href="{{ route('catalogue.index') }}" class="nav-link">Beranda</a>
                         </li>
                         <li class="nav-item">
-                            <a href="categories.html" class="nav-link">Kategori</a>
+                            <a href="{{ route('catalogue.collection') }}" class="nav-link">Koleksi</a>
                         </li>
                         <li class="nav-item">
-                            <a href="about.html" class="nav-link">Temukan Kami</a>
+                            <a href="{{ route('catalogue.categories') }}" class="nav-link">Kategori</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('catalogue.about') }}" class="nav-link">Temukan Kami</a>
                         </li>
                     </ul>
                 </nav>

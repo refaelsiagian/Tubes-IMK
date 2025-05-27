@@ -6,28 +6,30 @@
             <div class="container">
                 <div class="tf-breadcrumb-wrap d-flex justify-content-between flex-wrap align-items-center">
                     <div class="tf-breadcrumb-list">
-                        <a href="index.html" class="text">Beranda</a>
+                        <a href="{{ route('catalogue.index') }}" class="text">Beranda</a>
                         <i class="icon icon-arrow-right"></i>
-                        <a href="#" class="text">Pashmina</a>
+                        <a href="{{ route('catalogue.categoryDetail', $product->category->category_slug) }}" class="text">{{ $product->category->category_name }}</a>
                         <i class="icon icon-arrow-right"></i>
-                        <span class="text">Pashmina Hanna Polos</span>
+                        <span class="text">{{ $product->item_name }}</span>
                     </div>
                 </div>
             </div>
         </div>
         <!-- /breadcrumb -->
 
-        <!-- default -->
         <section class="flat-spacing-4 pt_0">
             <div class="tf-main-product section-image-zoom">
                 <div class="container">
                     <div class="row">
-                          <div class="col-md-6">
+                        <div class="col-md-6">
                             <div class="tf-product-media-wrap">
                                 <div class="">
                                     <div class="d-flex flex-column gap-10">
-                                        <a href="images/products/black-1.jpg" target="_blank">
-                                            <img class="gambar-produk" src="images/products/black-1.jpg" alt="">
+                                        {{-- <a href="{{ asset('catalogue/images/products/'.$product->images->first()->filename) }}" target="_blank">
+                                            <img class="gambar-produk" src="{{ asset('catalogue/images/products/'.$product->images->first()->filename) }}" alt="">
+                                        </a> --}}
+                                        <a href="{{ asset('catalogue/images/products/black-1.jpg')}}" target="_blank">
+                                            <img class="gambar-produk" src="{{ asset('catalogue/images/products/black-1.jpg') }}" alt="">
                                         </a>
                                     </div>
                                 </div>
@@ -39,79 +41,88 @@
                                 <div class="tf-zoom-main"></div>
                                 <div class="tf-product-info-list other-image-zoom">
                                     <div class="tf-product-info-title">
-                                        <h5>Pashmina Hanna Polos</h5>
+                                        <h5>{{ $product->item_name }}</h5>
                                     </div>
+
                                     <div class="tf-product-info-price">
-                                        <div class="price">Rp 30.000</div>
+                                        <div class="price">Rp{{ number_format($product->selling_price, 0, ',', '.') }}</div>
                                     </div>
+
+                                    @php
+                                        $details = $product->details;
+                                        $groupedByColour = $details->groupBy('colour')->filter(fn($group) => $group->first()->colour !== null);
+                                        $groupedBySize = $details->groupBy('size')->filter(fn($group) => $group->first()->size !== null);
+
+                                        $hasColour = $details->pluck('colour')->filter()->isNotEmpty();
+                                        $hasSize = $details->pluck('size')->filter()->isNotEmpty();
+                                        $totalStock = $details->sum('stock');
+                                    @endphp
+
                                     <div class="tf-product-info-stock">
-                                        <div class="stock-count">27</div>
+                                        <div class="stock-count">{{ $totalStock }}</div>
                                         <p class="fw-6">Produk tersedia</p>
-                                    </div>                                    
-                                    <div class="tf-product-info-variant-picker">
-                                        <div class="variant-picker-item">
-                                            <div class="variant-picker-label">
-                                                Pilihan Warna :
-                                            </div>
-                                            <div class="tf-dropdown-sort full position-relative" data-bs-toggle="dropdown">
-                                                <div class="btn-select">
-                                                    <span class="text-sort-value">Featured</span>
-                                                    <span class="icon icon-arrow-down"></span>
-                                                </div>
-                                                <div class="dropdown-menu">
-                                                    <div class="select-item">
-                                                        <span class="text-value-item">Light Purple</span>
-                                                    </div>
-                                                    <div class="select-item">
-                                                        <span class="text-value-item">Light Green</span>
-                                                    </div>
-                                                                                                        <div class="select-item">
-                                                        <span class="text-value-item">Light Purple</span>
-                                                    </div>
-                                                    <div class="select-item">
-                                                        <span class="text-value-item">Light Green</span>
-                                                    </div>
-                                                                                                        <div class="select-item">
-                                                        <span class="text-value-item">Light Purple</span>
-                                                    </div>
-                                                    <div class="select-item">
-                                                        <span class="text-value-item">Light Green</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="variant-picker-item">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="variant-picker-label">
-                                                    Pilihan Ukuran :
-                                                </div>
-                                            </div>
-                                            <div class="tf-dropdown-sort full position-relative" data-bs-toggle="dropdown">
-                                                <div class="btn-select">
-                                                    <span class="text-sort-value">M</span>
-                                                    <span class="icon icon-arrow-down"></span>
-                                                </div>
-                                                <div class="dropdown-menu">
-                                                    <div class="select-item active">
-                                                        <span class="text-value-item">M</span>
-                                                    </div>
-                                                    <div class="select-item">
-                                                        <span class="text-value-item">L</span>
-                                                    </div>
-                                                    <div class="select-item">
-                                                        <span class="text-value-item">XL</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
-                            </form>
+
+                                    <div class="tf-product-info-variant-picker mt-3">
+                                        @if ($hasColour && $hasSize)
+                                            {{-- Ada warna + ukuran --}}
+                                            @foreach ($groupedByColour as $colour => $variants)
+                                                <div class="variant-colour mb-2">
+                                                    <button type="button" class="btn-variant-colour mb-1" style="border: 1px solid #000; padding: 5px 10px; background: #f5f5f5;">
+                                                        {{ ucfirst($colour) }}
+                                                    </button>
+                                                    @foreach ($variants as $variant)
+                                                        <div class="d-flex justify-content-between align-items-center ms-3">
+                                                            <span>{{ strtoupper($variant->size) }} :</span>
+                                                            <span>{{ $variant->stock }} pcs tersedia</span>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @endforeach
+
+                                        @elseif (!$hasColour && $hasSize)
+                                            {{-- Hanya ukuran --}}
+                                            @foreach ($groupedBySize as $size => $variants)
+                                                @php
+                                                    $stock = $variants->sum('stock');
+                                                @endphp
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <span>{{ strtoupper($size) }} :</span>
+                                                    <span>{{ $stock }} pcs tersedia</span>
+                                                </div>
+                                            @endforeach
+
+                                        @elseif ($hasColour && !$hasSize)
+                                            {{-- Hanya warna --}}
+                                            @foreach ($groupedByColour as $colour => $variants)
+                                                @php
+                                                    $stock = $variants->sum('stock');
+                                                @endphp
+                                                <div class="variant-colour mb-2">
+                                                    <button type="button" class="btn-variant-colour mb-1" style="border: 1px solid #000; padding: 5px 10px; background: #f5f5f5;">
+                                                        {{ ucfirst($colour) }}
+                                                    </button>
+                                                    <div class="ms-3">
+                                                        {{ $stock }} pcs tersedia
+                                                    </div>
+                                                </div>
+                                            @endforeach
+
+                                        @else
+                                            {{-- Tidak ada varian --}}
+                                            <p class="mt-2">Produk ini tidak memiliki varian khusus.</p>
+                                        @endif
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-        <!-- /default -->
+
+
 
         <!-- tabs -->
         <section class="flat-spacing-17 pt_0">
@@ -128,30 +139,8 @@
                                 <div class="widget-content-inner active">
                                     <div class="">
                                         <p class="mb_30">
-                                            Button-up shirt sleeves and a relaxed silhouette. It’s tailored with drapey,
-                                            crinkle-texture fabric that’s made from LENZING™ ECOVERO™ Viscose — responsibly
-                                            sourced wood-based
-                                            fibres produced through a process that reduces impact on forests, biodiversity and
-                                            water supply.
+                                            {{ $product->item_description }}
                                         </p>
-                                        <div class="tf-product-des-demo">
-                                            <div class="right">
-                                                <h3 class="fs-16 fw-5">Features</h3>
-                                                <ul>
-                                                  <li>Front button placket</li>
-                                                  <li> Adjustable sleeve tabs</li>
-                                                  <li>Babaton embroidered crest at placket and hem</li>
-                                                </ul>
-                                            </div>
-                                            <div class="left">
-                                              <h3 class="fs-16 fw-5">Materials Care</h3>
-                                                <ul class="mb-0">
-                                                  <li>Content: 100% LENZING™ ECOVERO™ Viscose</li>
-                                                  <li>Care: Hand wash</li>
-                                                  <li>Imported</li>
-                                                </ul>
-                                              </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
