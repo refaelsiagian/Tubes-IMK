@@ -26,6 +26,12 @@
             <div class="card">
                 <div class="card-content">
                     <div class="card-body">
+                        @if(session('error'))
+                            <div class="alert alert-danger alert-dismissible fade show">
+                                {{ session('error') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
                         @if(session('success'))
                             <div class="alert alert-light-success color-success alert-dismissible fade show mb-3">
                                 {{ session('success') }}
