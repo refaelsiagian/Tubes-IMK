@@ -174,6 +174,43 @@ public function index(Request $request)
             ->where('item_price', $validated['item_price'])
             ->first();
 
+        $ticketId = $validated['ticket_id'];
+        $itemId = $validated['item_id'];
+        $colour = $validated['item_colour'];
+        $size = $validated['item_size'];
+        $requestedQty = $validated['item_quantity'];
+
+        // Ambil stok dari tabel detail
+        $stokDetail = \DB::table('details')
+            ->where('item_id', $itemId)
+            ->where('colour', $colour)
+            ->where('size', $size)
+            ->first();
+
+        if (!$stokDetail) {
+            return redirect()->back()->with('error', 'Stok untuk item tidak ditemukan.');
+        }
+
+        $stokTersedia = $stokDetail->stock;
+
+        // Cek apakah item yang sama sudah pernah ditambahkan sebelumnya
+        $existing = TicketDetail::where('ticket_id', $ticketId)
+            ->where('item_id', $itemId)
+            ->where('item_colour', $colour)
+            ->where('item_size', $size)
+            ->where('item_price', $validated['item_price'])
+            ->first();
+
+        $totalRequested = $requestedQty;
+        if ($existing) {
+            $totalRequested += $existing->item_quantity;
+        }
+
+        if ($totalRequested > $stokTersedia) {
+            $sudahDiTiket = $existing ? $existing->item_quantity : 0;
+            return redirect()->back()->with('error', 'Jumlah yang diminta melebihi stok. Stok tersedia: ' . $stokTersedia . '. Di tiket pesanan: ' . $sudahDiTiket . '. Jumlah yang ingin ditambahkan: ' . $validated['item_quantity'] . '.');
+        }
+
         if ($existing) {
             // Tambahkan jumlah baru
             $existing->item_quantity += $validated['item_quantity'];
