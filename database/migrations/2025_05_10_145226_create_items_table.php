@@ -16,9 +16,10 @@ return new class extends Migration
             $table->string('item_name');
             $table->string('item_slug')->unique();
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
-            $table->text('item_description')->nullable();
-            $table->integer('buying_price')->nullable();
-            $table->integer('selling_price')->nullable();
+            $table->text('item_description');
+            $table->integer('buying_price');
+            $table->integer('selling_price');
+            $table->integer('limit_stock')->default(5);
             $table->boolean('item_status')->default(1);
             $table->timestamps();
         });

@@ -22,6 +22,8 @@ return new class extends Migration
 
             $table->date('ticket_date')->nullable();
             $table->integer('total_amount')->nullable();
+            $table->integer('total_cost')->nullable();
+            $table->integer('total_profit')->nullable();
             $table->integer('status')->default(0);
             $table->timestamps();
         });
