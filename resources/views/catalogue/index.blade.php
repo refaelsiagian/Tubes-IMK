@@ -22,8 +22,8 @@
                             <img src="{{ asset('catalogue/images/slider/fashion-slideshow-02.jpg')}}" alt="fashion-slideshow">
                             <div class="box-content">
                                 <div class="container">
-                                    <h1 class="fade-item fade-item-1">Simple <br class="md-hidden">Style</h1>
-                                    <p class="fade-item fade-item-2">Mix and match hijabmu, tetap syar’i dan modis</p>
+                                    <h1 class="fade-item fade-item-1">Simple Style</h1>
+                                    <p class="fade-item fade-item-2">Discover our exclusive hijab collection designed to keep you stylish, <br> confident, and modest—wherever life takes you</p>
                                     <a href="collection.html" class="fade-item fade-item-3 tf-btn btn-fill animate-hover-btn btn-xl radius-3"><span>Shop Collection</span><i class="icon icon-arrow-right"></i></a>
                                 </div>
                             </div>
@@ -35,7 +35,7 @@
                             <div class="box-content">
                                 <div class="container">
                                     <h1 class="fade-item fade-item-1">Hijab Chic</h1>
-                                    <p class="fade-item fade-item-2">Discover our exclusive hijab collection designed to keep you stylish, <br> confident, and modest—wherever life takes you</p>
+                                    <p class="fade-item fade-item-2">Mix and match hijabmu, tetap syar'i dan modis</p>
                                     <a href="collection.html" class="fade-item fade-item-3 tf-btn btn-fill animate-hover-btn btn-xl radius-3"><span> Shop Collection</span><i class="icon icon-arrow-right"></i></a>
                                 </div>
                             </div>
@@ -414,7 +414,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-top">
-                    <img class="lazyload" data-src="images/item/banner-newleter.jpg" src="images/item/banner-newleter.jpg" alt="Selamat Datang">
+                    <img class="lazyload" data-src="catalogue/images/item/banner-newleter.jpg" src="catalogue/images/item/banner-newleter.jpg" alt="Selamat Datang">
                     <span class="icon icon-close btn-hide-popup" data-bs-dismiss="modal"></span>
                 </div>
                 <div class="modal-bottom text-center">
