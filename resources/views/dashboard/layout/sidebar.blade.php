@@ -96,24 +96,11 @@
                             </a>
                         </li>
                         <li
-                            class="sidebar-item @if($active == 'transaction') active @endif has-sub">
-                            <a href="" class='sidebar-link'>
-                                <i class="bi bi-cash-stack"></i>
+                            class="sidebar-item @if($active == 'transaction') active @endif">
+                            <a href="{{ route('transactions.index') }}" class='sidebar-link'>
+                                <i class="bi bi-wallet-fill"></i>
                                 <span>Transaksi</span>
                             </a>
-                            <ul class="submenu ">
-                                <li class="submenu-item @if(isset($range) && $range == 'daily') active @endif">
-                                    <a href="{{ route('transactions.index') }}" class="submenu-link">Harian</a>
-                                </li>
-                                
-                                <li class="submenu-item @if(isset($range) && $range == 'monthly') active @endif">
-                                    <a href="form-editor-ckeditor.html" class="submenu-link">Bulanan</a>
-                                </li>
-                                
-                                <li class="submenu-item @if(isset($range) && $range == 'annual') active @endif">
-                                    <a href="form-editor-summernote.html" class="submenu-link">Tahunan</a>
-                                </li>
-                            </ul>
                         </li>
                         <li
                             class="sidebar-item @if($active == 'category') active @endif">

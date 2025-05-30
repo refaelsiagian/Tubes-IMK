@@ -41,9 +41,10 @@
                                                     <table class="table table-striped table-bordered">
                                                         <thead>
                                                             <tr>
-                                                                <th style="width: 60%;">Nama Barang</th>
-                                                                <th style="width: 15%;">Jumlah</th>
-                                                                <th style="width: 25%;">Subtotal</th>
+                                                                <th style="width: 50%;">Nama Barang</th>
+                                                                <th style="width: 20%;">Harga</th>
+                                                                <th style="width: 10%;">Jumlah</th>
+                                                                <th style="width: 20%;">Subtotal</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -51,6 +52,7 @@
                                                             @foreach ($ticket->ticket_details as $detail)
                                                                 <tr>
                                                                     <td>{{ $detail->item_name ?? ($detail->item->name ?? '-') }}{{ $detail->item_colour ? ', ' . $detail->item_colour : '' }}{{ $detail->item_size ? ', ' . $detail->item_size : '' }}</td>
+                                                                    <td>Rp{{ number_format($detail->item->selling_price ?? 0, 0, ',', '.') }}</td>
                                                                     <td>{{ $detail->item_quantity ?? $detail->qty }}</td>
                                                                     <td>Rp{{ number_format($detail->subtotal, 0, ',', '.') }}</td>
                                                                 </tr>
@@ -58,6 +60,7 @@
                                                             @endforeach
                                                             <tr>
                                                                 <td><strong>Total</strong></td>
+                                                                <td></td>
                                                                 <td></td>
                                                                 <td><strong>Rp{{ number_format($total, 0, ',', '.') }}</strong></td>
                                                             </tr>
