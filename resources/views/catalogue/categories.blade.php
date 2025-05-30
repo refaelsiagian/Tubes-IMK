@@ -58,7 +58,9 @@
                             @endforeach
                         </div>
                         {{-- tombol "lihat selengkapnya" --}}
-                        <a href="{{ route('catalogue.categoryDetail', $category->category_slug) }}" class="btn btn-primary btn-lg animate-hover-btn">Lihat Selengkapnya</a>
+                        <div class="custom-load-more-wrapper">
+                            <a href="{{ route('catalogue.categoryDetail', $category->category_slug) }}" class="custom-animate-hover-btn">Lihat Selengkapnya</a>
+                        </div>
                     </div>
                 </div>
             </div>         

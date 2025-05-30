@@ -22,17 +22,26 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="tf-product-media-wrap">
-                                <div class="">
-                                    <div class="d-flex flex-column gap-10">
-                                        {{-- <a href="{{ asset('catalogue/images/products/'.$product->images->first()->filename) }}" target="_blank">
-                                            <img class="gambar-produk" src="{{ asset('catalogue/images/products/'.$product->images->first()->filename) }}" alt="">
-                                        </a> --}}
-                                        <a href="{{ asset('catalogue/images/products/black-1.jpg')}}" target="_blank">
-                                            <img class="gambar-produk" src="{{ asset('catalogue/images/products/black-1.jpg') }}" alt="">
-                                        </a>
-                                    </div>
+                            <div class="carousel-wrapper">
+                              <div id="productCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+                                <div class="carousel-inner">
+                                  <div class="carousel-item active">
+                                    <img src="{{ asset('catalogue/images/products/orange-1.jpg') }}" class="gambar-produk" alt="Product 1">
+                                  </div>
+                                  <div class="carousel-item">
+                                    <img src="{{ asset('catalogue/images/products/white-1.jpg') }}" class="gambar-produk" alt="Product 2">
+                                  </div>
                                 </div>
+
+                                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                  <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                  <span class="visually-hidden">Next</span>
+                                </button>
+                              </div>
                             </div>
                         </div>
 
@@ -58,25 +67,27 @@
                                         $totalStock = $details->sum('stock');
                                     @endphp
 
-                                    <div class="tf-product-info-stock">
+                                    <div class="tf-product-info-stock mb-3">
                                         <div class="stock-count">{{ $totalStock }}</div>
                                         <p class="fw-6">Produk tersedia</p>
                                     </div>
 
-                                    <div class="tf-product-info-variant-picker mt-3">
+                                    <div class="tf-product-info-variant-picker mt-4">
                                         @if ($hasColour && $hasSize)
                                             {{-- Ada warna + ukuran --}}
                                             @foreach ($groupedByColour as $colour => $variants)
-                                                <div class="variant-colour mb-2">
-                                                    <button type="button" class="btn-variant-colour mb-1" style="border: 1px solid #000; padding: 5px 10px; background: #f5f5f5;">
+                                                <div class="variant-colour mb-3">
+                                                    <div class="variant-colour-label">
                                                         {{ ucfirst($colour) }}
-                                                    </button>
-                                                    @foreach ($variants as $variant)
-                                                        <div class="d-flex justify-content-between align-items-center ms-3">
-                                                            <span>{{ strtoupper($variant->size) }} :</span>
-                                                            <span>{{ $variant->stock }} pcs tersedia</span>
-                                                        </div>
-                                                    @endforeach
+                                                    </div>
+                                                    <div class="ms-2">
+                                                        @foreach ($variants as $variant)
+                                                            <div class="d-flex justify-content-between small text-muted mb-1">
+                                                                <span>{{ strtoupper($variant->size) }}</span>
+                                                                <span>{{ $variant->stock }} pcs tersedia</span>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
                                                 </div>
                                             @endforeach
 
@@ -86,8 +97,8 @@
                                                 @php
                                                     $stock = $variants->sum('stock');
                                                 @endphp
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <span>{{ strtoupper($size) }} :</span>
+                                                <div class="d-flex justify-content-between small text-muted mb-2">
+                                                    <span>{{ strtoupper($size) }}</span>
                                                     <span>{{ $stock }} pcs tersedia</span>
                                                 </div>
                                             @endforeach
@@ -98,11 +109,11 @@
                                                 @php
                                                     $stock = $variants->sum('stock');
                                                 @endphp
-                                                <div class="variant-colour mb-2">
-                                                    <button type="button" class="btn-variant-colour mb-1" style="border: 1px solid #000; padding: 5px 10px; background: #f5f5f5;">
+                                                <div class="variant-colour mb-3">
+                                                    <div class="variant-colour-label">
                                                         {{ ucfirst($colour) }}
-                                                    </button>
-                                                    <div class="ms-3">
+                                                    </div>
+                                                    <div class="ms-2 small text-muted">
                                                         {{ $stock }} pcs tersedia
                                                     </div>
                                                 </div>
@@ -110,7 +121,7 @@
 
                                         @else
                                             {{-- Tidak ada varian --}}
-                                            <p class="mt-2">Produk ini tidak memiliki varian khusus.</p>
+                                            <p class="mt-2 text-muted">Produk ini tidak memiliki varian khusus.</p>
                                         @endif
                                     </div>
 
