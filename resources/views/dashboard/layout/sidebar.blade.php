@@ -47,7 +47,7 @@
                             <a href="#" class="d-flex align-items-start"> 
                                 <i class="bi bi-person-circle fs-3 me-4 my auto"></i> 
                                 <div class="d-flex flex-column">
-                                    <span class="fw-semibold"> {{ auth()->user()->name }} Role: {{ auth()->user()->role }} </span>
+                                    <span class="fw-semibold"> {{ auth()->user()->name }} <span class="badge rounded-pill bg-success">{{ auth()->user()->role }}</span></span>
                                     <small class="text-muted">{{ auth()->user()->id }}</small>
                                 </div>
                             </a>

@@ -37,6 +37,9 @@
                                     @endforeach
                                 </div>
                             </div>
+                            <div>
+                                <a href="{{ route('items.print') }}" class="btn btn-primary">Cetak Stok</a>
+                            </div>
                         </div>
 
                         @if (session('success'))
@@ -67,14 +70,14 @@
                                     <td>{{ $item->total_stock }}</td>
                                     <td>
                                         @if ($item->item_status == 1)
-                                        <span class="badge bg-success">Ditampilkan</span>
+                                        <span class="badge rounded-pill bg-success">Ditampilkan</span>
                                         @else
-                                        <span class="badge bg-danger">Ditarik</span>
+                                        <span class="badge rounded-pill bg-danger">Ditarik</span>
                                         @endif
                                     </td>
                                     <td>
                                         <a href="{{ route('items.edit', $item->id) }}" class="btn btn-success">Edit</a>
-                                        <a href="{{ route('items.details', $item->id) }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Foto & Stok">Detail</a>
+                                        <a href="{{ route('items.details', $item->id).'?from=items'  }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Foto & Stok">Detail</a>
                                         <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
                                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                                             data-reference="parent">
