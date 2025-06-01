@@ -21,8 +21,11 @@ return new class extends Migration
             $table->string('item_colour')->nullable();
             $table->string('item_size')->nullable();
             $table->integer('item_price');
+            $table->integer('buying_price');
             $table->integer('item_quantity');
             $table->integer('subtotal');
+            $table->integer('subcost');
+            $table->integer('subprofit');
             $table->timestamps();
         });
     }

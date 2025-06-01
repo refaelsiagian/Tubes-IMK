@@ -62,12 +62,16 @@
                             <hr class="mb-5">
 
                             <div class="mb-3">
-                                <h5>Foto</h5>
+                                <label for="foto" class="form-label fw-bold h5">Foto</label>
                                 <small class="text-muted">Maks. 1MB per foto.</small>
                             </div>
-
+                            
+                            <div class="mb-3">
+                                <label for="image" class="form-label fw-bold h6">Umum</label>
+                                <small class="text-muted">Maksimal 5. Minimal 2 agar barang dapat ditampilkan</small>
+                            </div>
+                            
                             <div class="row mb-3">
-                                <label class="form-label"><b>Umum</b> (Maks. 5)</label>
                                 @foreach($image_general as $image)
                                     <div class="col-md-4">
                                         @if ($image->image_name == null)
@@ -85,13 +89,16 @@
                                 @endforeach
                             </div>
 
-
+                            <div>
+                                <label for="image" class="form-label fw-bold h6">Warna</label>
+                                <small class="text-muted">Wajib dimasukkan agar barang dapat ditampilkan</small>
+                            </div>
 
                             @if ($image_colour->isNotEmpty())
                                 <div class="row mb-5">
                                     @foreach ($image_colour as $colour)
                                         <div class="col-md-4 mb-3">
-                                            <label class="form-label"><b>Warna: </b>{{ $colour->colour }}</label>
+                                            <label class="form-label">{{ $colour->colour }}</label>
                                             
                                             @if ($colour->image_name == null)
                                                 <input type="file" class="image-preview-filepond" value="null" name="image[{{ $colour->id }}]" data-max-file-size="1MB">
@@ -111,7 +118,7 @@
 
                             <hr class="mb-4">
 
-                            <div class="mb-3 mt-5">
+                            <div class="mb-4 mt-5">
                                 <label for="stock" class="form-label fw-bold h5">Tambahkan Stok</label>
                                 <div class="row">
                                     @foreach ($details as $detail)
@@ -123,8 +130,14 @@
                                 </div>
                             </div>
 
+                            <div class="mb-3">
+                                <label for="limit_stock" class="form-label fw-bold h5">Pengingat Stok</label>
+                                <small class="text-muted">Jika stok kurang dari yang ditentukan akan diberi pengingat di dashboard.</small>
+                                <input type="number" name="limit_stock" class="form-control" id="limit_stock" value="{{ $item->limit_stock }}" required min="0">
+                            </div>
+
                             <button type="submit" class="btn btn-primary">Simpan</button>
-                            <a href="{{ route('items.index') }}" class="btn btn-danger">Kembali</a>
+                            <a href="{{ route(request()->get('from') === 'stock' ? 'dashboard.stock' : 'items.index') }}" class="btn btn-danger">Kembali</a>
                         </form>
                     </div>
                 </div>

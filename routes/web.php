@@ -13,6 +13,7 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\CatalogueController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\PrintController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,19 +34,20 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('owner')->middleware(['role:owner'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard/chart', [DashboardController::class, 'chart'])->name('dashboard.chart');
+        Route::get('/dashboard/stock', [DashboardController::class, 'stock'])->name('dashboard.stock');
         
-        Route::resource('items', ItemController::class);
+        Route::resource('items', ItemController::class)->except('show');
         Route::get('items/{item}/details', [ItemController::class, 'details'])->name('items.details');
         Route::post('items/{item}/modify', [ItemController::class, 'modify'])->name('items.modify');
         Route::put('items/{item}/withdraw', [ItemController::class, 'withdraw'])->name('items.withdraw');
         Route::put('items/{item}/restore', [ItemController::class, 'restore'])->name('items.restore');
+        Route::get('items/print', [ItemController::class, 'print'])->name('items.print');
         
         Route::resource('categories', CategoryController::class)->except(['show', 'edit', 'create']);
         
-        Route::get('items/{item}/details', [ItemController::class, 'details'])->name('items.details');
-        Route::post('items/{item}/save', [ItemController::class, 'details'])->name('items.save');
-        
         Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
+        Route::get('/transactions/print' , [TransactionController::class, 'print'])->name('transactions.print');
     });
 
     Route::prefix('admin')->middleware(['role:admin'])->group(function () {

@@ -13,7 +13,7 @@ class TicketDetail extends Model
     protected $table = 'ticket_details';
     protected $fillable = [
         'id', 'ticket_id', 'item_id', 'item_name', 'item_colour', 'item_size',
-        'item_price', 'item_quantity', 'subtotal'
+        'item_price', 'buying_price', 'item_quantity', 'subtotal', 'subcost', 'subprofit',
     ];
 
     protected $guarded = ['id'];

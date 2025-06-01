@@ -48,6 +48,12 @@ public function index(Request $request)
 
     function add(Request $request)
     {
+        $currentTicket = Ticket::where('status', 0)->first();
+
+        if(!$currentTicket){
+            return redirect()->route('tickets.index');
+        }
+
         $allItems = Item::all();
 
         $details = \DB::table('details')
@@ -140,7 +146,7 @@ public function index(Request $request)
         return redirect()->route('tickets.index')->with('success', 'Transaksi berhasil dibatalkan.');
     }
 
-    public function addItem(Request $request)
+   public function addItem(Request $request)
     {
         $validated = $request->validate([
             'ticket_id' => 'required',
@@ -152,72 +158,85 @@ public function index(Request $request)
             'item_quantity' => 'required|integer|min:1',
         ]);
 
+        // Ambil buying_price dari item sekali saja
+        $item = Item::find($validated['item_id']);
+        $buyingPrice = $item ? $item->buying_price : 0;
+
         $subtotal = $validated['item_price'] * $validated['item_quantity'];
+        $subcost = $buyingPrice * $validated['item_quantity'];
+        $subprofit = $subtotal - $subcost;
 
-            $existing = TicketDetail::where('ticket_id', $validated['ticket_id'])
-        ->where('item_id', $validated['item_id'])
-        ->where('item_colour', $validated['item_colour'])
-        ->where('item_size', $validated['item_size'])
-        ->where('item_price', $validated['item_price'])
-        ->first();
+        // Cari data existing
+        $existing = TicketDetail::where('ticket_id', $validated['ticket_id'])
+            ->where('item_id', $validated['item_id'])
+            ->where('item_colour', $validated['item_colour'])
+            ->where('item_size', $validated['item_size'])
+            ->where('item_price', $validated['item_price'])
+            ->first();
 
-            $ticketId = $validated['ticket_id'];
-    $itemId = $validated['item_id'];
-    $colour = $validated['item_colour'];
-    $size = $validated['item_size'];
-    $requestedQty = $validated['item_quantity'];
+        $ticketId = $validated['ticket_id'];
+        $itemId = $validated['item_id'];
+        $colour = $validated['item_colour'];
+        $size = $validated['item_size'];
+        $requestedQty = $validated['item_quantity'];
 
-    // Ambil stok dari tabel detail
-    $stokDetail = \DB::table('details')
-        ->where('item_id', $itemId)
-        ->where('colour', $colour)
-        ->where('size', $size)
-        ->first();
+        // Ambil stok dari tabel detail
+        $stokDetail = \DB::table('details')
+            ->where('item_id', $itemId)
+            ->where('colour', $colour)
+            ->where('size', $size)
+            ->first();
 
-    if (!$stokDetail) {
-        return redirect()->back()->with('error', 'Stok untuk item tidak ditemukan.');
-    }
+        if (!$stokDetail) {
+            return redirect()->back()->with('error', 'Stok untuk item tidak ditemukan.');
+        }
 
-    $stokTersedia = $stokDetail->stock;
+        $stokTersedia = $stokDetail->stock;
 
-    // Cek apakah item yang sama sudah pernah ditambahkan sebelumnya
-    $existing = TicketDetail::where('ticket_id', $ticketId)
-        ->where('item_id', $itemId)
-        ->where('item_colour', $colour)
-        ->where('item_size', $size)
-        ->where('item_price', $validated['item_price'])
-        ->first();
+        // Cek apakah item yang sama sudah pernah ditambahkan sebelumnya
+        $existing = TicketDetail::where('ticket_id', $ticketId)
+            ->where('item_id', $itemId)
+            ->where('item_colour', $colour)
+            ->where('item_size', $size)
+            ->where('item_price', $validated['item_price'])
+            ->first();
 
-    $totalRequested = $requestedQty;
-    if ($existing) {
-        $totalRequested += $existing->item_quantity;
-    }
+        $totalRequested = $requestedQty;
+        if ($existing) {
+            $totalRequested += $existing->item_quantity;
+        }
 
-if ($totalRequested > $stokTersedia) {
-    $sudahDiTiket = $existing ? $existing->item_quantity : 0;
-    return redirect()->back()->with('error', 'Jumlah yang diminta melebihi stok. Stok tersedia: ' . $stokTersedia . '. Di tiket pesanan: ' . $sudahDiTiket . '. Jumlah yang ingin ditambahkan: ' . $validated['item_quantity'] . '.');
-}
+        if ($totalRequested > $stokTersedia) {
+            $sudahDiTiket = $existing ? $existing->item_quantity : 0;
+            return redirect()->back()->with('error', 'Jumlah yang diminta melebihi stok. Stok tersedia: ' . $stokTersedia . '. Di tiket pesanan: ' . $sudahDiTiket . '. Jumlah yang ingin ditambahkan: ' . $validated['item_quantity'] . '.');
+        }
 
-        
-    if ($existing) {
-        $existing->item_quantity += $validated['item_quantity'];
-        $existing->subtotal = $existing->item_price * $existing->item_quantity;
-        $existing->save();
-        
-     } else {
-        TicketDetail::create([
-            'ticket_id' => $validated['ticket_id'],
-            'item_id' => $validated['item_id'],
-            'item_name' => $validated['item_name'],
-            'item_colour' => $validated['item_colour'],
-            'item_size' => $validated['item_size'],
-            'item_price' => $validated['item_price'],
-            'item_quantity' => $validated['item_quantity'],
-            'subtotal' => $subtotal,
-        ]);
-    }
+        if ($existing) {
+            // Tambahkan jumlah baru
+            $existing->item_quantity += $validated['item_quantity'];
+            $existing->subtotal = $existing->item_price * $existing->item_quantity;
+            $existing->subcost = $buyingPrice * $existing->item_quantity;
+            $existing->subprofit = $existing->subtotal - $existing->subcost;
+            $existing->save();
+        } else {
+            TicketDetail::create([
+                'ticket_id' => $validated['ticket_id'],
+                'item_id' => $validated['item_id'],
+                'item_name' => $validated['item_name'],
+                'item_colour' => $validated['item_colour'],
+                'item_size' => $validated['item_size'],
+                'item_price' => $validated['item_price'],
+                'buying_price' => $buyingPrice,
+                'item_quantity' => $validated['item_quantity'],
+                'subtotal' => $subtotal,
+                'subcost' => $subcost,
+                'subprofit' => $subprofit,
+            ]);
+        }
+
         return redirect()->route('tickets.add')->with('success', 'Item berhasil ditambahkan.');
     }
+
 
     public function destroyItem($ticket_id, $item_id, $id)
     {

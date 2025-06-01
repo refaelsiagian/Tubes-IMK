@@ -37,6 +37,7 @@ var optionsProfileVisit = {
     ],
   },
 }
+
 let optionsVisitorsProfile = {
   series: [70, 30],
   labels: ["Male", "Female"],

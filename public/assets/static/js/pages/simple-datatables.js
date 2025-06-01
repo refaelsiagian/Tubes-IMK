@@ -8,7 +8,7 @@ let dataTable = new simpleDatatables.DataTable(
     labels: {
       placeholder: "Cari...",
       perPage: "{select} baris per halaman",
-      noRows: "Tidak ada data yang ditemukan",
+      noRows: "Tidak ada data",
       info: "Menampilkan {start} sampai {end} dari {rows} baris",
       infoFiltered: "(difilter dari {rows} total baris)",
       infoEmpty: "Tidak ada data yang tersedia",

@@ -47,7 +47,7 @@
                             <a href="#" class="d-flex align-items-start"> 
                                 <i class="bi bi-person-circle fs-3 me-4 my auto"></i> 
                                 <div class="d-flex flex-column">
-                                    <span class="fw-semibold"> {{ auth()->user()->name }} Role: {{ auth()->user()->role }} </span>
+                                    <span class="fw-semibold"> {{ auth()->user()->name }} <span class="badge rounded-pill bg-success">{{ auth()->user()->role }}</span></span>
                                     <small class="text-muted">{{ auth()->user()->id }}</small>
                                 </div>
                             </a>
@@ -96,24 +96,11 @@
                             </a>
                         </li>
                         <li
-                            class="sidebar-item @if($active == 'transaction') active @endif has-sub">
-                            <a href="" class='sidebar-link'>
-                                <i class="bi bi-cash-stack"></i>
+                            class="sidebar-item @if($active == 'transaction') active @endif">
+                            <a href="{{ route('transactions.index') }}" class='sidebar-link'>
+                                <i class="bi bi-wallet-fill"></i>
                                 <span>Transaksi</span>
                             </a>
-                            <ul class="submenu ">
-                                <li class="submenu-item @if(isset($range) && $range == 'daily') active @endif">
-                                    <a href="{{ route('transactions.index') }}" class="submenu-link">Harian</a>
-                                </li>
-                                
-                                <li class="submenu-item @if(isset($range) && $range == 'monthly') active @endif">
-                                    <a href="form-editor-ckeditor.html" class="submenu-link">Bulanan</a>
-                                </li>
-                                
-                                <li class="submenu-item @if(isset($range) && $range == 'annual') active @endif">
-                                    <a href="form-editor-summernote.html" class="submenu-link">Tahunan</a>
-                                </li>
-                            </ul>
                         </li>
                         <li
                             class="sidebar-item @if($active == 'category') active @endif">

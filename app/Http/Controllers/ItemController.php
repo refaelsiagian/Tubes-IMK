@@ -7,6 +7,7 @@ use App\Models\Item;
 use App\Models\Detail;
 use App\Models\Image;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 use Illuminate\Http\Request;
 
@@ -109,7 +110,7 @@ class ItemController extends Controller
         $slug = str_replace(' ', '-', strtolower($request->item_name));
         $request->merge(['item_slug' => $slug, 'item_status' => 0]);
 
-        $newItem = Item::create($request->all());
+        $newItem = Item::create($request->except(['size', 'colour']));
 
         // Panggil fungsi untuk buat detail
         $this->createItemDetails($newItem, $request->input('size', []), $request->input('colour', []));
@@ -191,6 +192,12 @@ class ItemController extends Controller
                     ]);
                 }
             }
+        }
+
+        if($request->has('limit_stock')){
+            $item->update([
+                'limit_stock' => $request->input('limit_stock'),
+            ]);
         }
 
         return back()->with('success', 'Item berhasil diperbarui!');
@@ -369,6 +376,20 @@ class ItemController extends Controller
         //
     }
 
+
+
+
+    public function print(){
+        $items = Detail::with('item', 'item.category')->get();
+        $items = $items->toArray();
+
+        $pdf = Pdf::loadView('dashboard.item.print', [
+            'items' => $items
+        ]);
+        $pdf->setPaper('a4', 'landscape');
+
+        return $pdf->download('Laporan Stok Barang Shabrina' . ' - ' . date('Ymd') . '.pdf');
+    }
 
 
 
