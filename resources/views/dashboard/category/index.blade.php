@@ -79,7 +79,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $category->category_name }}</td>
                                             <td>{{ $category->category_description }}</td>
-                                            <td>{{ $category->items_count }}</td>
+                                            <td>{{ $category->items_count }} {{ $category->items_count == 0 ? ' (Kategori kosong tidak ditampilkan)' : '' }}</td>
                                             <td>
                                                 @if ($category->category_image)
                                                     <div style="position: relative; display: inline-block;">

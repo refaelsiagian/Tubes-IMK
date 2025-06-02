@@ -14,6 +14,10 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\CatalogueController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\PrintController;
+use App\Http\Controllers\ChangeEmailController;
+use App\Http\Controllers\UpdateEmailController;
+use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\ResetPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,7 +41,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard/chart', [DashboardController::class, 'chart'])->name('dashboard.chart');
         Route::get('/dashboard/stock', [DashboardController::class, 'stock'])->name('dashboard.stock');
         
-        Route::resource('items', ItemController::class)->except('show');
+        Route::post('items/{id}/force-delete', [ItemController::class, 'destroy'])->name('items.force-delete');
+        Route::resource('items', ItemController::class)->except(['show', 'destroy']);
         Route::get('items/{item}/details', [ItemController::class, 'details'])->name('items.details');
         Route::post('items/{item}/modify', [ItemController::class, 'modify'])->name('items.modify');
         Route::put('items/{item}/withdraw', [ItemController::class, 'withdraw'])->name('items.withdraw');
@@ -48,6 +53,30 @@ Route::middleware(['auth'])->group(function () {
         
         Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
         Route::get('/transactions/print' , [TransactionController::class, 'print'])->name('transactions.print');
+
+        // Form input email lama
+        Route::get('/change-email', [ChangeEmailController::class, 'showChangeEmailForm'])->name('change-email.show');
+
+        // Proses verifikasi email lama
+        Route::post('/change-email', [ChangeEmailController::class, 'verifyOldEmail'])->name('change-email.verify');
+
+        // Nanti untuk step selanjutnya:
+        Route::get('/update-email', [UpdateEmailController::class, 'showUpdateEmailForm'])->name('update-email.show');
+
+        // Input email baru
+        Route::get('/update-email', [UpdateEmailController::class, 'showUpdateEmailForm'])->name('update-email.show');
+        Route::post('/update-email', [UpdateEmailController::class, 'updateEmail'])->name('update-email.submit');
+
+        // Halaman info pending
+        Route::get('/email-pending', [UpdateEmailController::class, 'emailPending'])->name('email-pending');
+
+        // Verifikasi email baru via link
+        Route::get('/verify-new-email/{user}/{hash}', [UpdateEmailController::class, 'verifyNewEmail'])->name('verify-new-email');
+
+        // Kirim ulang email verifikasi
+        Route::post('/resend-email', [UpdateEmailController::class, 'resendEmail'])->name('resend-email');
+
+
     });
 
     Route::prefix('admin')->middleware(['role:admin'])->group(function () {
@@ -65,6 +94,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/history', [HistoryController::class, 'index'])->name('admin.history');
     });
 
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::get('/profile/change-password', [ProfileController::class, 'change_password'])->name('profile.change-password');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 Route::get('/get-stock', [StockController::class, 'getStock']);
@@ -73,6 +105,14 @@ Route::get('/unauthorized', function () {
     return view('unauthorized');
 })->name('unauthorized');
 
+Route::get('/forgot-password', [ForgotPasswordController::class, 'create'])->name('password.request');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'store'])->name('password.email');
+
+Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showForm'])
+    ->name('password.reset');
+
+Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
+    ->name('password.update');
 
 // Public routes
 Route::get('/', [CatalogueController::class, 'index'])->name('catalogue.index');

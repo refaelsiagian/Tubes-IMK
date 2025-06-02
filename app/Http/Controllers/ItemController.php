@@ -8,6 +8,8 @@ use App\Models\Detail;
 use App\Models\Image;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Hash;
+
 
 use Illuminate\Http\Request;
 
@@ -219,13 +221,49 @@ class ItemController extends Controller
     /**
      * Restore an item.
      */
-    public function restore(string $id){
-        //mengubah status item menjadi 1 (active)
+    public function restore(string $id)
+    {
         $item = Item::findOrFail($id);
-        $item->item_status = 1; // Set status ke active
+
+        // Ambil semua detail item
+        $details = Detail::where('item_id', $id)->get();
+
+        // --- Validasi minimal 2 gambar di slot umum (colour = null) ---
+        $generalImageCount = Image::where('item_id', $id)
+            ->whereNull('colour')
+            ->whereNotNull('image_name')
+            ->count();
+
+        if ($generalImageCount < 2) {
+            return redirect()->back()->with('error', 'Minimal 2 gambar harus diisi di slot umum agar item dapat ditampilkan.');
+        }
+
+        // --- Validasi gambar per warna (jika ada varian warna) ---
+        $colours = $details->pluck('colour')->unique()->filter(); // Ambil semua warna unik (tidak null)
+        $errors = [];
+
+        foreach ($colours as $colour) {
+            $imageCount = Image::where('item_id', $id)
+                ->where('colour', $colour)
+                ->whereNotNull('image_name')
+                ->count();
+
+            if ($imageCount < 1) {
+                $errors[] = "Warna '{$colour}' harus memiliki minimal 1 gambar.";
+            }
+        }
+
+        if (!empty($errors)) {
+            return redirect()->back()->with('error', 'Gambar per warna harus diisi seluruhnya.');
+        }
+
+        // Jika semua validasi lolos, aktifkan item
+        $item->item_status = 1;
         $item->save();
+
         return redirect()->route('items.index')->with('success', 'Item berhasil ditampilkan.');
     }
+
 
 
     /**
@@ -371,9 +409,23 @@ class ItemController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'password' => 'required|string',
+        ]);
+
+        // Contoh: password admin dari user login
+        $user = auth()->user();
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['status' => 'error', 'message' => 'Password salah!']);
+        }
+
+        // Hapus item
+        $item = Item::findOrFail($id);
+        $item->delete();
+
+        return response()->json(['status' => 'success', 'message' => 'Item berhasil dihapus.']);
     }
 
 

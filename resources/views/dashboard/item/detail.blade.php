@@ -91,7 +91,7 @@
 
                             <div>
                                 <label for="image" class="form-label fw-bold h6">Warna</label>
-                                <small class="text-muted">Wajib dimasukkan agar barang dapat ditampilkan</small>
+                                <small class="text-muted">Tiap warna wajib memiliki gambar agar barang dapat ditampilkan</small>
                             </div>
 
                             @if ($image_colour->isNotEmpty())
