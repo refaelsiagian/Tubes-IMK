@@ -30,24 +30,33 @@
                             {{ session('error') }}
                         </div>
                     @endif
-                    <h1 class="auth-title">Log in.</h1>
+                    @if (session('status'))
+                        <div class="alert alert-success">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+                    <h1 class="auth-title">Masuk</h1>
 
                     <form action="{{ route('login.authenticate') }}" method="POST">
                         @csrf
                         <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="text" name="id" class="form-control form-control-xl" placeholder="ID" required>
+                            <input type="text" name="id" class="form-control" placeholder="ID" required>
                             <div class="form-control-icon">
                                 <i class="bi bi-person"></i>
                             </div>
                         </div>
                         <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="password" name="password" class="form-control form-control-xl" placeholder="Password" required>
+                            <input type="password" name="password" class="form-control" placeholder="Password" required>
                             <div class="form-control-icon">
                                 <i class="bi bi-shield-lock"></i>
                             </div>
                         </div>
-                        <button class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Log in</button>
+                        <button class="btn btn-primary btn-block mt-5">Masuk</button>
                     </form>
+
+                    <p class="mt-3">
+                        <a href="{{ route('password.request') }}">Lupa password?</a>
+                    </p>
                 </div>
             </div>
             <div class="col-lg-7 d-none d-lg-block">

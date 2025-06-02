@@ -112,6 +112,11 @@ class TicketSeeder extends Seeder
             ['id' => 'SH0098', 'admin_id' => 'R002', 'ticket_date' => '2025-05-28', 'status' => 1, 'created_at' => '2025-05-28 10:29:00', 'updated_at' => '2025-05-28 10:29:00', 'total_amount' => 1140000, 'total_cost' => 378000, 'total_profit' => 762000, ],
             ['id' => 'SH0099', 'admin_id' => 'R003', 'ticket_date' => '2025-05-28', 'status' => 1, 'created_at' => '2025-05-28 10:36:00', 'updated_at' => '2025-05-28 10:36:00', 'total_amount' => 825000, 'total_cost' => 425000, 'total_profit' => 400000, ],
             ['id' => 'SH0100', 'admin_id' => 'R003', 'ticket_date' => '2025-05-28', 'status' => 1, 'created_at' => '2025-05-28 10:54:00', 'updated_at' => '2025-05-28 10:54:00', 'total_amount' => 285000, 'total_cost' => 145000, 'total_profit' => 140000, ],
+['id' => 'SH0101', 'admin_id' => 'R002', 'ticket_date' => Carbon::now()->toDateString(), 'status' => 1, 'created_at' => Carbon::now()->format('Y-m-d H:i'), 'updated_at' => Carbon::now()->format('Y-m-d H:i'), 'total_amount' => 160000, 'total_cost' => 67000, 'total_profit' => 93000],
+['id' => 'SH0102', 'admin_id' => 'R003', 'ticket_date' => Carbon::now()->toDateString(), 'status' => 1, 'created_at' => Carbon::now()->format('Y-m-d H:i'), 'updated_at' => Carbon::now()->format('Y-m-d H:i'), 'total_amount' => 410000, 'total_cost' => 193000, 'total_profit' => 217000],
+['id' => 'SH0103', 'admin_id' => 'R002', 'ticket_date' => Carbon::now()->toDateString(), 'status' => 1, 'created_at' => Carbon::now()->format('Y-m-d H:i'), 'updated_at' => Carbon::now()->format('Y-m-d H:i'), 'total_amount' => 660000, 'total_cost' => 354000, 'total_profit' => 306000],
+['id' => 'SH0104', 'admin_id' => 'R003', 'ticket_date' => Carbon::now()->toDateString(), 'status' => 1, 'created_at' => Carbon::now()->format('Y-m-d H:i'), 'updated_at' => Carbon::now()->format('Y-m-d H:i'), 'total_amount' => 780000, 'total_cost' => 390000, 'total_profit' => 390000],
+['id' => 'SH0105', 'admin_id' => 'R002', 'ticket_date' => Carbon::now()->toDateString(), 'status' => 1, 'created_at' => Carbon::now()->format('Y-m-d H:i'), 'updated_at' => Carbon::now()->format('Y-m-d H:i'), 'total_amount' => 510000, 'total_cost' => 257000, 'total_profit' => 253000],
         ];
         DB::table('tickets')->insert($tickets);
     }

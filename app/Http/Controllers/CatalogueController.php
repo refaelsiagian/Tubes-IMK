@@ -16,7 +16,11 @@ class CatalogueController extends Controller
 {
     public function index()
     {
-        $categories = Category::withCount('items')->get();
+        $categories = Category::whereHas('items', function ($query) {
+            $query->where('item_status', 1);
+        })->withCount(['items' => function ($query) {
+            $query->where('item_status', 1);
+        }])->get();
 
         // Ambil tanggal 3 bulan terakhir
         $threeMonthsAgo = Carbon::now()->subMonths(3);

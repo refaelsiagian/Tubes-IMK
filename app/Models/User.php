@@ -53,4 +53,23 @@ class User extends Authenticatable
     {
         return $this->hasMany(Ticket::class, 'admin_id', 'id');
     }
+
+    // app/Models/User.php
+
+    public function getMaskedEmailAttribute()
+    {
+        $email = $this->email;
+        list($user, $domain) = explode('@', $email);
+        $maskedUser = substr($user, 0, 2) . str_repeat('*', max(0, strlen($user) - 2));
+        return $maskedUser . '@' . $domain;
+    }
+
+    public function getMaskedPendingEmailAttribute()
+    {
+        $email = $this->pending_email;
+        list($user, $domain) = explode('@', $email);
+        $maskedUser = substr($user, 0, 2) . str_repeat('*', max(0, strlen($user) - 2));
+        return $maskedUser . '@' . $domain;
+    }
+
 }
