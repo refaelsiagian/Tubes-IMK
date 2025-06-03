@@ -109,6 +109,13 @@
                                 <span>Kategori</span>
                             </a>
                         </li>
+                        <li
+                            class="sidebar-item @if($active == 'account') active @endif">
+                            <a href="{{ route('account.index') }}" class='sidebar-link'>
+                                <i class="bi bi-person-fill"></i>
+                                <span>Akun</span>
+                            </a>
+                        </li>
                         @endcan
 
                         {{-- logout --}}

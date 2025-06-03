@@ -42,6 +42,7 @@ class ProfileController extends Controller
 
         // Update password
         $user->password = Hash::make($request->password_baru);
+        $user->password_reset = false;
         $user->save();
 
         return redirect()->route('profile.index')->with('success', 'Password berhasil diubah.');

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('pending_email')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('password_reset')->default(false);
             $table->string('role')->default('admin'); 
             $table->string('status')->default('active');
             $table->rememberToken();
