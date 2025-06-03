@@ -5077,6 +5077,12 @@ footer {
     margin-bottom: 0.5rem;
 }
 
+.variant-colour-label:hover {
+    background-color: #e2e6ea; /* sedikit lebih gelap dari #f8f9fa */
+    border-color: #6c757d;     /* juga bisa sedikit lebih gelap */
+    cursor: pointer;           /* agar lebih terasa bisa diklik */
+}
+
 .tf-product-info-variant-picker .d-flex.justify-content-between.small.text-muted {
     font-size: 0.85rem;
     line-height: 1.3;
