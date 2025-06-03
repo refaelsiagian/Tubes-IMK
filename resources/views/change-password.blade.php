@@ -23,7 +23,7 @@
             <div class="col-lg-5 col-12">
                 <div id="auth-left">
                     <div class="auth-logo">
-                        <a href="index.html"><img src="{{ asset('assets/compiled/svg/logo.svg') }}" alt="Logo"></a>
+                        <a href="index.html"><img src="{{ asset('assets/compiled/svg/shabrina1.svg') }}" alt="Logo"></a>
                     </div>
                     @if (session('error'))
                         <div class="alert alert-danger">
