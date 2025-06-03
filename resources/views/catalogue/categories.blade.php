@@ -6,7 +6,7 @@
         <div class="container-full">
         <div class="heading text-center">Kategori</div>
         <p class="text-center text-2 text_black-2 mt_5">
-            Shop through our latest selection of Fashion
+            Pilih kategori favorit dan temukan produk yang kamu suka
         </p>
         </div>
     </div>

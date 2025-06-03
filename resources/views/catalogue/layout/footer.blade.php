@@ -22,7 +22,7 @@
                             </div>
                             <ul>
                                 <li>
-                                    <p><strong>WhatsApp:</strong> <a href="https://wa.me/6285380492753">+62 853–8049–2753</a></p>
+                                    <p><strong>WhatsApp:</strong> <a href="https://wa.me/6285276799470">+62 852-7679-9470</a></p>
                                 </li>
                                 <li>
                                     <p><strong>Alamat:</strong><br>
@@ -40,7 +40,7 @@
             <div class="footer-bottom">
                 <div class="container">
                     <div class="footer-bottom-wrap text-center">
-                        <p class="footer-menu_item">© 2025 Shabrina. All Rights Reserved.</p>
+                        <p class="footer-menu_item">© 2025 Shabrina. Hak Cipta Dilindungi.</p>
                     </div>
                 </div>
             </div>
