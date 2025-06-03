@@ -45,6 +45,7 @@ class DashboardController extends Controller
             'active' => 'dashboard',
             'data' => $data,
             'lowstock' => $lowStockDetails->count(),
+            'page' => 'Dashboard - Shabrina',
         ]);
     }
 
@@ -97,6 +98,7 @@ class DashboardController extends Controller
         return view('dashboard.stock', [
             'active' => 'dashboard',
             'lowstock' => $lowStockDetails,
+            'page' => 'Stok Hampir Habis - Shabrina',
         ]);
     }
 }

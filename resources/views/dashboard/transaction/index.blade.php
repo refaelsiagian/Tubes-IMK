@@ -56,7 +56,7 @@
                                         </tr>
                                         <tr>
                                             <td class="fw-bold">Cetak Laporan Penjualan</td>
-                                            <td><a href="{{ route('transactions.print', ['date' => request('date') ?? date('Y-m')]) }}" class="btn btn-primary">Cetak</a></td>
+                                            <td><a href="{{ route('transactions.print', ['date' => request('date') ?? date('Y-m')]) }}" target="_blank" class="btn btn-primary">Cetak</a></td>
                                         </tr>
                                     </tbody>
                                 </table>

@@ -46,7 +46,8 @@ class InfoController extends Controller
             'transactionCount' => $transactionCount,
             'avgTransaction' => $avgTransaction,
             'totalItemSold' => $totalItemSold,
-            'itemSales' => $itemSales
+            'itemSales' => $itemSales,
+            'page' => 'Info - Shabrina'
         ]);
     }
 }

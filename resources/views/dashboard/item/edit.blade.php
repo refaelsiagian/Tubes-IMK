@@ -28,7 +28,7 @@
                     @endif
                 <div class="card-content">
                     <div class="card-body">
-                        <form action="{{ route('items.update', $item->id) }}" method="POST" enctype="multipart/form-data">
+                        <form id="item-form" action="{{ route('items.update', $item->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="mb-3">
@@ -120,9 +120,30 @@
                                 <label for="selling_price" class="form-label fw-bold">Harga Jual</label>
                                 <input type="number" class="form-control" id="selling_price" name="selling_price" value="{{ old('selling_price') ? old('selling_price') : $item->selling_price }}" required max="9999999">
                             </div>
-                            <button type="submit" class="btn btn-primary">Simpan & Lanjut</button>
+                            <button type="button" id="btn-confirm-update" class="btn btn-primary">Simpan & Lanjut</button>
                             <a href="{{ route('items.index') }}" class="btn btn-danger">Batal</a>
                         </form>
+
+                        <!-- Modal Konfirmasi -->
+                        <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmModalLabel">Konfirmasi Perubahan</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Menghapus warna dan/atau ukuran secara otomatis akan menghapus data gambar dan stok terkait.
+                                        <br><strong>Lanjutkan perbarui data barang?</strong>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" onclick="location.reload()">Batal</button>
+                                        <button type="button" class="btn btn-primary" id="modal-confirm-btn">Perbarui</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -179,4 +200,35 @@
             container.appendChild(li);
         }
     </script>
+
+<script>
+    const form = document.getElementById('item-form');
+    const btnConfirmUpdate = document.getElementById('btn-confirm-update');
+    const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+
+    // Simpan data size dan warna awal yang readonly
+    let initialSizes = Array.from(document.querySelectorAll('#size-container input[readonly]')).map(input => input.value);
+    let initialColours = Array.from(document.querySelectorAll('#colour-container input[readonly]')).map(input => input.value);
+
+    btnConfirmUpdate.addEventListener('click', function () {
+        const currentSizes = Array.from(document.querySelectorAll('#size-container input')).map(input => input.value);
+        const currentColours = Array.from(document.querySelectorAll('#colour-container input')).map(input => input.value);
+
+        // Cek jika ada readonly value yang hilang
+        const deletedSizes = initialSizes.filter(size => !currentSizes.includes(size));
+        const deletedColours = initialColours.filter(colour => !currentColours.includes(colour));
+
+        if (deletedSizes.length > 0 || deletedColours.length > 0) {
+            const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+            modal.show();
+        } else {
+            form.submit(); // Tidak ada yang dihapus, langsung submit
+        }
+    });
+
+    modalConfirmBtn.addEventListener('click', function () {
+        form.submit(); // Submit saat tombol modal ditekan
+    });
+</script>
+
 @endsection

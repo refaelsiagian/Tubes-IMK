@@ -40,7 +40,8 @@ public function index(Request $request)
         'ticketDetails' => $ticketDetails,
         'totalQuantity' => $totalQuantity,
         'totalPrice' => $totalPrice,
-        'active' => $active
+        'active' => $active,
+        'page' => 'Transaksi - Shabrina'
     ]);
 }
 
@@ -74,6 +75,7 @@ public function index(Request $request)
             'totalQuantity' => $totals->total_quantity ?? 0,
             'totalPrice' => $totals->total_price ?? 0,
             'active' => 'ticket',
+            'page' => 'Tambah Barang - Shabrina'
         ]);
     }
 

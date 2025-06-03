@@ -68,7 +68,7 @@
                             
                             <div class="mb-3">
                                 <label for="image" class="form-label fw-bold h6">Umum</label>
-                                <small class="text-muted">Maksimal 5. Minimal 2 agar barang dapat ditampilkan</small>
+                                <small class="text-muted">Maksimal 5. Minimal 2 agar barang dapat ditampilkan <span class="text-danger">Jika foto tidak sesuai ketentuan, barang akan langsung ditarik dari katalog.</span></small>
                             </div>
                             
                             <div class="row mb-3">
@@ -91,7 +91,7 @@
 
                             <div>
                                 <label for="image" class="form-label fw-bold h6">Warna</label>
-                                <small class="text-muted">Tiap warna wajib memiliki gambar agar barang dapat ditampilkan</small>
+                                <small class="text-muted">Tiap warna wajib memiliki gambar agar barang dapat ditampilkan <span class="text-danger">Jika foto tidak sesuai ketentuan, barang akan langsung ditarik dari katalog.</span></small>
                             </div>
 
                             @if ($image_colour->isNotEmpty())

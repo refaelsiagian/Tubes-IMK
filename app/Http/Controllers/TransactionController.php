@@ -73,6 +73,7 @@ class TransactionController extends Controller
             'range' => 'annual',
             'dropdown' => $this->getDateDropdown(),
             'selected_date' => $filterDate,
+            'page' => 'Laporan Transaksi - Shabrina'
         ]));
     }
 
