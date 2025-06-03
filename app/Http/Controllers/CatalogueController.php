@@ -97,9 +97,20 @@ class CatalogueController extends Controller
 
     public function collection()
     {
-        $items = Item::with(['images' => function ($query) {
-            $query->whereNull('colour')->orderBy('id'); // Ambil yang colour null & urut
-        }])->where('item_status', 1)->get();
+        $title = "Semua Koleksi";
+
+        $search = request('search');
+
+        $query = Item::with(['images' => function ($query) {
+            $query->whereNull('colour')->orderBy('id');
+        }])->where('item_status', 1);
+
+        if ($search) {
+            $query->where('item_name', 'like', '%' . $search . '%');
+            $title = 'Koleksi: ' . $search;
+        }
+
+        $items = $query->get();
 
         // Bantuin ambil 2 gambar yang ada
         foreach ($items as $item) {
@@ -108,7 +119,7 @@ class CatalogueController extends Controller
             $item->hover_image = $images->get(1) ? 'storage/' . $images->get(1)->image_name : 'catalogue/images/products/white-1.jpg';
         }
 
-        return view('catalogue.collection', compact('items'));
+        return view('catalogue.collection', compact('title', 'items'));
     }
 
 

@@ -38,7 +38,9 @@
             <!-- Search button -->
             <div class="col-xl-3 col-md-4 col-3 d-flex justify-content-end align-items-center">
                 <div class="search-box d-flex">
-                    <input type="text" class="form-control form-control-sm me-2" placeholder="Search...">
+                    <form action="" method="get">
+                        <input type="text" name="search" class="form-control form-control-sm me-2" placeholder="Search..." value="{{ request()->search ?? '' }}">
+                    </form>
                 </div>
             </div>
         </div>
