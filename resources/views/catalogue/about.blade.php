@@ -5,7 +5,7 @@
         <div class="container-full">
         <div class="heading text-center">Temukan Kami</div>
         <p class="text-center text-2 text_black-2 mt_5">
-            Shop through our latest selection of Fashion
+            Lokasi dan cara menghubungi kami dengan mudah
         </p>
         </div>
     </div>
@@ -27,7 +27,7 @@
                     </div>
                     <div class="mb_20">
                         <p class="mb_15"><strong>WhatsApp</strong></p>
-                        <p>+62 853-8049-2753</p>
+                        <p><a href="https://wa.me/6285276799470"><strong>+62 852-7679-9470</strong></a></p>
                     </div>
                     <div class="mb_20">
                         <p class="mb_15"><strong>Alamat</strong></p>

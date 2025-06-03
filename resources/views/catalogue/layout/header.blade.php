@@ -39,7 +39,7 @@
             <div class="col-xl-3 col-md-4 col-3 d-flex justify-content-end align-items-center">
                 <div class="search-box d-flex">
                     <form action="{{ route('catalogue.collection') }}" method="get">
-                        <input type="text" name="search" class="form-control form-control-sm me-2" placeholder="Search..." value="{{ request()->search ?? '' }}">
+                        <input type="text" name="search" class="form-control form-control-sm me-2" placeholder="Cari produk.." value="{{ request()->search ?? '' }}">
                     </form>
                 </div>
             </div>

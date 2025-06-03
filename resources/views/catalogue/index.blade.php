@@ -10,9 +10,9 @@
                             <img src="{{ asset('catalogue/images/slider/fashion-slideshow-01.jpg')}}" alt="fashion-slideshow">
                             <div class="box-content">
                                 <div class="container">
-                                    <h1 class="fade-item fade-item-1">Hijab Style For<br>Everyday</h1>
-                                    <p class="fade-item fade-item-2">From daily wear to special occasions, stay covered in style</p>
-                                    <a href="collection.html" class="fade-item fade-item-3 tf-btn btn-fill animate-hover-btn btn-xl radius-3"><span>Shop Collection</span><i class="icon icon-arrow-right"></i></a>
+                                    <h2 class="fade-item fade-item-1">Hijab Stylish<br>untuk hari-harimu</h2>
+                                    <p class="fade-item fade-item-2">Tampil anggun dan nyaman dengan pilihan hijab yang cocok untuk <br> aktivitas harianmu.</p>
+                                    <a href="{{ route('catalogue.collection') }}" class="fade-item fade-item-3 tf-btn btn-fill animate-hover-btn btn-xl radius-3"><span>Koleksi Hijab</span><i class="icon icon-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -22,9 +22,9 @@
                             <img src="{{ asset('catalogue/images/slider/fashion-slideshow-02.jpg')}}" alt="fashion-slideshow">
                             <div class="box-content">
                                 <div class="container">
-                                    <h1 class="fade-item fade-item-1">Simple Style</h1>
-                                    <p class="fade-item fade-item-2">Discover our exclusive hijab collection designed to keep you stylish, <br> confident, and modest—wherever life takes you</p>
-                                    <a href="collection.html" class="fade-item fade-item-3 tf-btn btn-fill animate-hover-btn btn-xl radius-3"><span>Shop Collection</span><i class="icon icon-arrow-right"></i></a>
+                                    <h2 class="fade-item fade-item-1">Gaya Hijab<br>Cerita Kamu</h2>
+                                    <p class="fade-item fade-item-2">Temukan koleksi hijab yang bikin kamu makin percaya diri <br> Saatnya Tampil Menawan dengan Cara Sederhana</p>
+                                    <a href="{{ route('catalogue.collection') }}" class="fade-item fade-item-3 tf-btn btn-fill animate-hover-btn btn-xl radius-3"><span>Koleksi Hijab</span><i class="icon icon-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -34,9 +34,9 @@
                             <img src="{{ asset('catalogue/images/slider/fashion-slideshow-03.jpg')}}" alt="fashion-slideshow">
                             <div class="box-content">
                                 <div class="container">
-                                    <h1 class="fade-item fade-item-1">Hijab Chic</h1>
+                                    <h2 class="fade-item fade-item-1">Hijab Trendi</h2>
                                     <p class="fade-item fade-item-2">Mix and match hijabmu, tetap syar'i dan modis</p>
-                                    <a href="collection.html" class="fade-item fade-item-3 tf-btn btn-fill animate-hover-btn btn-xl radius-3"><span> Shop Collection</span><i class="icon icon-arrow-right"></i></a>
+                                    <a href="{{ route('catalogue.collection') }}" class="fade-item fade-item-3 tf-btn btn-fill animate-hover-btn btn-xl radius-3"><span>Koleksi Hijab</span><i class="icon icon-arrow-right"></i></a>
                                 </div>
                             </div>
                             
@@ -60,7 +60,7 @@
                         <div class="nav-sw nav-prev-collection aksesoris-prev"><span class="icon icon-arrow-left"></span></div>
                         <div class="nav-sw nav-next-collection aksesoris-next"><span class="icon icon-arrow-right"></span></div>
                     </div>
-                    <span class="text-3 fw-7 text-uppercase title wow fadeInUp" data-wow-delay="0s">SHOP BY CATEGORIES</span>
+                    <span class="text-3 fw-7 text-uppercase title wow fadeInUp" data-wow-delay="0s">Kategori Hijab</span>
                </div>
                <div class="row">
                     <div class="col-12">
@@ -96,8 +96,8 @@
         <section class="flat-spacing-5 pt_0 flat-seller">
             <div class="container">
                 <div class="flat-title">
-                    <span class="title wow fadeInUp" data-wow-delay="0s">Best Seller</span>
-                    <p class="sub-title wow fadeInUp" data-wow-delay="0s">Shop the Latest Styles: Stay ahead of the curve with our newest arrivals</p>
+                    <span class="title wow fadeInUp" data-wow-delay="0s">Produk Terlaris</span>
+                    <p class="sub-title wow fadeInUp" data-wow-delay="0s">Pilihan favorit yang paling banyak diminati — jangan sampai kehabisan!</p>
                 </div>
                 <div class="grid-layout loadmore-item wow fadeInUp" data-wow-delay="0s" data-grid="grid-4">
                     <!-- card product 1 -->
@@ -297,7 +297,7 @@
                     </div> --}}
                 </div>
                 <div class="tf-pagination-wrap view-more-button text-center">
-                    <button class="tf-btn-loading tf-loading-default style-2 btn-loadmore "><span class="text">Load more</span></button>
+                    <button class="tf-btn-loading tf-loading-default style-2 btn-loadmore "><span class="text">Tampilkan Lagi</span></button>
                 </div>
             </div>
         </section>
