@@ -24,24 +24,41 @@
                         <div class="col-md-6">
                             <div class="carousel-wrapper">
                               <div id="productCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
-                                <div class="carousel-inner">
-                                  <div class="carousel-item active">
-                                    <img src="{{ asset('catalogue/images/products/orange-1.jpg') }}" class="gambar-produk" alt="Product 1">
-                                  </div>
-                                  <div class="carousel-item">
-                                    <img src="{{ asset('catalogue/images/products/white-1.jpg') }}" class="gambar-produk" alt="Product 2">
-                                  </div>
-                                </div>
+                                    <div class="carousel-inner">
+                                        @php
+                                            $hasImage = false;
+                                            // dd($product->images[0]->image_name);
+                                        @endphp
 
-                                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-                                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                  <span class="visually-hidden">Previous</span>
-                                </button>
-                                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                  <span class="visually-hidden">Next</span>
-                                </button>
-                              </div>
+                                        @foreach ($product->images as $index => $image)
+                                            @if ($image->image_name) {{-- hanya tampilkan kalau image_name tidak null --}}
+                                                @php $hasImage = true; @endphp
+                                                <div class="carousel-item {{ $index == 0 ? 'active' : '' }}" data-colour="{{ strtolower($image->colour ?? 'default') }}">
+                                                    <img src="{{ asset('storage/' . $image->image_name) }}" class="gambar-produk" alt="Product Image {{ $index + 1 }}">
+                                                </div>
+                                            @endif
+                                        @endforeach
+
+                                        {{-- Fallback jika tidak ada gambar sama sekali --}}
+                                        @if (! $hasImage)
+                                            <div class="carousel-item active">
+                                                <img src="{{ asset('catalogue/images/products/orange-1.jpg') }}" class="gambar-produk" alt="Fallback Product 1">
+                                            </div>
+                                            <div class="carousel-item">
+                                                <img src="{{ asset('catalogue/images/products/white-1.jpg') }}" class="gambar-produk" alt="Fallback Product 2">
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -77,9 +94,9 @@
                                             {{-- Ada warna + ukuran --}}
                                             @foreach ($groupedByColour as $colour => $variants)
                                                 <div class="variant-colour mb-3">
-                                                    <div class="variant-colour-label">
+                                                    <button class="variant-colour-label" data-colour="{{ strtolower($colour) }}">
                                                         {{ ucfirst($colour) }}
-                                                    </div>
+                                                    </button>
                                                     <div class="ms-2">
                                                         @foreach ($variants as $variant)
                                                             <div class="d-flex justify-content-between small text-muted mb-1">
@@ -110,9 +127,9 @@
                                                     $stock = $variants->sum('stock');
                                                 @endphp
                                                 <div class="variant-colour mb-3">
-                                                    <div class="variant-colour-label">
+                                                    <button class="variant-colour-label" data-colour="{{ strtolower($colour) }}">
                                                         {{ ucfirst($colour) }}
-                                                    </div>
+                                                    </button>
                                                     <div class="ms-2 small text-muted">
                                                         {{ $stock }} pcs tersedia
                                                     </div>
@@ -168,4 +185,40 @@
     <script type="text/javascript" src="js/drift.min.js"></script>
     <script type="module" src="js/model-viewer.min.js"></script>
     <script type="module" src="js/zoom.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const colourButtons = document.querySelectorAll('.variant-colour-label');
+        const carouselItems = document.querySelectorAll('#productCarousel .carousel-item');
+
+        colourButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const selectedColour = this.dataset.colour;
+
+                let matched = false;
+
+                carouselItems.forEach((item, index) => {
+                    const itemColour = item.dataset.colour?.toLowerCase() ?? 'default';
+
+                    if (itemColour === selectedColour) {
+                        item.classList.add('active');
+                        matched = true;
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+
+                // fallback ke 'default' jika tidak ada yang match
+                if (!matched) {
+                    carouselItems.forEach(item => {
+                        if (item.dataset.colour === 'default') {
+                            item.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+
 @endsection
