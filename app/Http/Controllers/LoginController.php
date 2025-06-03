@@ -26,16 +26,27 @@ class LoginController extends Controller
         
         if (auth()->attempt($credentials)) {
             $user = auth()->user();
-            
+
+            // Cek status akun
+            if ($user->status === 'inactive') {
+                auth()->logout();
+                return back()->with('error', 'Akun Anda tidak aktif. Silakan hubungi owner.');
+            }
+
+            if ($user->password_reset) {
+                return redirect()->route('profile.change-password')->with('info', 'Silahkan ubah password terlebih dahulu');
+            }
+
             $redirectTo = $user->role === 'owner'
-            ? route('dashboard')
-            : route('tickets.index');
+                ? route('dashboard')
+                : route('tickets.index');
             
             return redirect()->intended($redirectTo);
         }
 
         return back()->with('error', 'ID dan password tidak cocok')->withInput($request->only('id'));
     }
+
 
     public function logout()
     {

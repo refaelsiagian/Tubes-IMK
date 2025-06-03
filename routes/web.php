@@ -18,6 +18,7 @@ use App\Http\Controllers\ChangeEmailController;
 use App\Http\Controllers\UpdateEmailController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\AccountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +55,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
         Route::get('/transactions/print' , [TransactionController::class, 'print'])->name('transactions.print');
 
+        Route::get('/accounts', [AccountController::class, 'index'])->name('account.index');
+        Route::post('/accounts', [AccountController::class, 'store'])->name('account.store');
+        Route::put('/account/activate/{id}', [AccountController::class, 'activate'])->name('account.activate');
+        Route::put('/account/deactivate/{id}', [AccountController::class, 'deactivate'])->name('account.deactivate');
+        Route::put('/account/reset-password', [AccountController::class, 'resetPassword'])->name('account.reset-password');
+
+
         // Form input email lama
         Route::get('/change-email', [ChangeEmailController::class, 'showChangeEmailForm'])->name('change-email.show');
 
@@ -75,8 +83,6 @@ Route::middleware(['auth'])->group(function () {
 
         // Kirim ulang email verifikasi
         Route::post('/resend-email', [UpdateEmailController::class, 'resendEmail'])->name('resend-email');
-
-
     });
 
     Route::prefix('admin')->middleware(['role:admin'])->group(function () {

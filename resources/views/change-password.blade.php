@@ -30,6 +30,11 @@
                             {{ session('error') }}
                         </div>
                     @endif
+                    @if (session('info'))
+                        <div class="alert alert-info">
+                            {{ session('info') }}
+                        </div>
+                    @endif
                     <h1 class="auth-title">Ubah Password</h1>
 
                     <form action="{{ route('profile.update') }}" method="POST">
