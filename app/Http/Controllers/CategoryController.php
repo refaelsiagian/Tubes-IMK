@@ -18,6 +18,7 @@ class CategoryController extends Controller
         return view('dashboard.category.index', [
             'categories' => $categories,
             'active' => 'category',
+            'page' => 'Data Kategori - Shabrina'
         ]);
     }
 

@@ -18,6 +18,7 @@ class AccountController extends Controller
             'active' => 'account',
             'admins' => $admins,
             'new_id' => $this->generateNewUserId(),
+            'page' => 'Data Admin - Shabrina'
         ]);
     }
 

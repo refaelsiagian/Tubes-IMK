@@ -30,4 +30,36 @@ class Item extends Model
     {
         return $this->hasMany(Detail::class);
     }
+
+    public function hasValidImages(): bool
+    {
+        // Hitung gambar umum (slot colour = null)
+        $generalImageCount = $this->images()
+            ->whereNull('colour')
+            ->whereNotNull('image_name')
+            ->count();
+
+        if ($generalImageCount < 2) {
+            return false;
+        }
+
+        // Ambil semua varian warna dari details
+        $colours = $this->details()
+            ->pluck('colour')
+            ->unique()
+            ->filter(); // hanya warna yang tidak null
+
+        foreach ($colours as $colour) {
+            $imageCount = $this->images()
+                ->where('colour', $colour)
+                ->whereNotNull('image_name')
+                ->count();
+
+            if ($imageCount < 1) {
+                return false;
+            }
+        }
+
+        return true; // Lolos semua
+    }
 }

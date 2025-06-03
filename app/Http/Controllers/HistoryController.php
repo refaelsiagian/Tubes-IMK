@@ -24,6 +24,7 @@ class HistoryController extends Controller
             'active' => 'history',
             'tickets' => $tickets,
             'riwayat' => $riwayat,
+            'page' => 'Riwayat - Shabrina'
         ]);
     }
 }

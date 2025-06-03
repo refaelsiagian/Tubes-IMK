@@ -58,6 +58,7 @@ class ItemController extends Controller
             'items' => $items,
             'categories' => $categories,
             'title' => $title,
+            'page' => 'Barang - Shabrina'
         ]);
     }
 
@@ -85,6 +86,7 @@ class ItemController extends Controller
             'active' => 'item',
             'categories' => $categories,
             'id' => $id,
+            'page' => 'Tambah Barang - Shabrina'
         ]);
     }
 
@@ -147,6 +149,7 @@ class ItemController extends Controller
             'image_general' => $image_general,
             'image_colour' => $image_colour,
             'active' => 'item',
+            'page' => 'Detail Barang - Shabrina'
         ]);
 
     }
@@ -202,7 +205,17 @@ class ItemController extends Controller
             ]);
         }
 
-        return back()->with('success', 'Item berhasil diperbarui!');
+        // 5️⃣ Update status item berdasarkan validasi gambar
+        if (!$item->hasValidImages()) {
+            $item->item_status = 0; // Tarik item
+        }
+
+        $item->save();
+
+        return back()->with('success', $item->item_status === 1
+            ? 'Item berhasil diperbarui!'
+            : 'Item diperbarui, tetapi ditarik karena gambar tidak lengkap.');
+
     }
 
 
@@ -225,37 +238,14 @@ class ItemController extends Controller
     {
         $item = Item::findOrFail($id);
 
-        // Ambil semua detail item
-        $details = Detail::where('item_id', $id)->get();
-
-        // --- Validasi minimal 2 gambar di slot umum (colour = null) ---
-        $generalImageCount = Image::where('item_id', $id)
-            ->whereNull('colour')
-            ->whereNotNull('image_name')
-            ->count();
-
-        if ($generalImageCount < 2) {
-            return redirect()->back()->with('error', 'Minimal 2 gambar harus diisi di slot umum agar item dapat ditampilkan.');
+        if (!$item->hasValidImages()) {
+            return redirect()->back()->with('error', 'Gambar item belum lengkap. Minimal 2 gambar umum dan 1 gambar per warna.');
         }
 
-        // --- Validasi gambar per warna (jika ada varian warna) ---
-        $colours = $details->pluck('colour')->unique()->filter(); // Ambil semua warna unik (tidak null)
-        $errors = [];
+        $item->item_status = 1;
+        $item->save();
 
-        foreach ($colours as $colour) {
-            $imageCount = Image::where('item_id', $id)
-                ->where('colour', $colour)
-                ->whereNotNull('image_name')
-                ->count();
-
-            if ($imageCount < 1) {
-                $errors[] = "Warna '{$colour}' harus memiliki minimal 1 gambar.";
-            }
-        }
-
-        if (!empty($errors)) {
-            return redirect()->back()->with('error', 'Gambar per warna harus diisi seluruhnya.');
-        }
+        return redirect()->route('items.index')->with('success', 'Item berhasil ditampilkan.');
 
         // Jika semua validasi lolos, aktifkan item
         $item->item_status = 1;
@@ -288,6 +278,7 @@ class ItemController extends Controller
             'item' => Item::findOrFail($id),
             'sizes' => Detail::where('item_id', $id)->pluck('size')->unique()->values(),
             'colours' => Detail::where('item_id', $id)->pluck('colour')->unique()->values(),
+            'page' => 'Edit Data Barang - Shabrina'
         ]);
     }
 

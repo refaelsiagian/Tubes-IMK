@@ -39,7 +39,7 @@
                                 </div>
                             </div>
                             <div>
-                                <a href="{{ route('items.print') }}" class="btn btn-primary">Cetak Stok</a>
+                                <a href="{{ route('items.print') }}" class="btn btn-primary" target="_blank">Cetak Stok</a>
                             </div>
                         </div>
 

@@ -13,7 +13,8 @@ class ProfileController extends Controller
     public function index()
     {
         return view('dashboard.profile.index',[
-            'active' => 'profile'
+            'active' => 'profile',
+            'page' => 'Profile - Shabrina'
         ]);
     }
     public function change_password()
