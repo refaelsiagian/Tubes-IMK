@@ -330,7 +330,7 @@ class AdminItemController extends Controller
             $item = Item::findOrFail($id);
 
             $request->validate([
-                'item_name' => 'required|max:255|unique:items,item_name' . $item,
+                'item_name' => 'required|max:255|unique:items,item_name,' . $item->id,
                 'category_id' => 'required|exists:categories,id',
                 'size' => 'nullable|array',
                 'colour' => 'nullable|array',
@@ -442,14 +442,15 @@ class AdminItemController extends Controller
                     // Hapus detail
                     $detail->delete();
 
-                    // Hapus slot gambar juga kalau warnanya sudah tidak ada
-                    if (!in_array($detail->colour, array_column($newCombinations, 'colour'))) {
+                    // Hapus slot gambar hanya jika warna bukan null DAN warna itu sudah tidak dipakai lagi
+                    if ($detail->colour !== null && !in_array($detail->colour, array_column($newCombinations, 'colour'))) {
                         Image::where('item_id', $item->id)
                             ->where('colour', $detail->colour)
                             ->delete();
                     }
                 }
             }
+
 
             DB::commit();
             return redirect()->route('items.details', $item->id)->with('success', 'Item berhasil diupdate.');

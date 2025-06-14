@@ -89,10 +89,12 @@
                                 @endforeach
                             </div>
 
+                            @if ($image_colour->isNotEmpty())
                             <div>
                                 <label for="image" class="form-label fw-bold h6">Warna</label>
                                 <small class="text-muted">Tiap warna wajib memiliki gambar agar barang dapat ditampilkan <span class="text-danger">Jika foto tidak sesuai ketentuan, barang akan langsung ditarik dari katalog.</span></small>
                             </div>
+                            @endif
 
                             @if ($image_colour->isNotEmpty())
                                 <div class="row mb-5">
