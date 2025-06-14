@@ -63,20 +63,19 @@
                                 <label class="form-label fw-bold">Ukuran</label>
                                 <div id="size-container">
                                     <!-- Tambahan size akan muncul di sini -->
-                                    @if($sizes[0] != null)
-                                        @foreach($sizes as $size)
+                                    @if(old('size'))
+                                        @foreach(old('size') as $size)
                                             <li class="d-flex mb-2">
-                                                <input type="text" name="size[]" value="{{ $size }}" placeholder="Ukuran" class="form-control form-control-sm me-2" readonly>
+                                                <input type="text" name="size[]" value="{{ $size }}" placeholder="Ukuran" class="form-control form-control-sm me-2" required>
                                                 <button type="button" class="btn btn-danger btn-sm" onclick="this.parentNode.remove()">
                                                     <i class="bi bi-x-circle-fill"></i>
                                                 </button>
                                             </li>
                                         @endforeach
-                                    @endif
-                                    @if(old('size'))
-                                        @foreach(old('size') as $size)
+                                    @elseif($sizes[0] != null)
+                                        @foreach($sizes as $size)
                                             <li class="d-flex mb-2">
-                                                <input type="text" name="size[]" value="{{ $size }}" placeholder="Ukuran" class="form-control form-control-sm me-2" required>
+                                                <input type="text" name="size[]" value="{{ $size }}" placeholder="Ukuran" class="form-control form-control-sm me-2" readonly>
                                                 <button type="button" class="btn btn-danger btn-sm" onclick="this.parentNode.remove()">
                                                     <i class="bi bi-x-circle-fill"></i>
                                                 </button>
@@ -88,20 +87,19 @@
 
                                 <label class="form-label fw-bold">Warna</label>
                                 <div id="colour-container">
-                                    @if($colours[0] != null)
-                                        @foreach($colours as $colour)
+                                    @if(old('colour'))
+                                        @foreach(old('colour') as $colour)
                                             <li class="d-flex mb-2">
-                                                <input type="text" name="colour[]" value="{{ $colour }}" placeholder="Warna" class="form-control form-control-sm me-2" readonly>
+                                                <input type="text" name="colour[]" value="{{ $colour }}" placeholder="Warna" class="form-control form-control-sm me-2" required>
                                                 <button type="button" class="btn btn-danger btn-sm" onclick="this.parentNode.remove()">
                                                     <i class="bi bi-x-circle-fill"></i>
                                                 </button>
                                             </li>
                                         @endforeach
-                                    @endif
-                                    @if(old('colour'))
-                                        @foreach(old('colour') as $colour)
+                                    @elseif($colours[0] != null)
+                                        @foreach($colours as $colour)
                                             <li class="d-flex mb-2">
-                                                <input type="text" name="colour[]" value="{{ $colour }}" placeholder="Warna" class="form-control form-control-sm me-2" required>
+                                                <input type="text" name="colour[]" value="{{ $colour }}" placeholder="Warna" class="form-control form-control-sm me-2" readonly>
                                                 <button type="button" class="btn btn-danger btn-sm" onclick="this.parentNode.remove()">
                                                     <i class="bi bi-x-circle-fill"></i>
                                                 </button>
@@ -201,34 +199,36 @@
         }
     </script>
 
+<!-- Letakkan ini paling bawah sebelum penutup </body> -->
 <script>
-    const form = document.getElementById('item-form');
-    const btnConfirmUpdate = document.getElementById('btn-confirm-update');
-    const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('item-form');
+        const btnConfirmUpdate = document.getElementById('btn-confirm-update');
+        const modalConfirmBtn = document.getElementById('modal-confirm-btn');
 
-    // Simpan data size dan warna awal yang readonly
-    let initialSizes = Array.from(document.querySelectorAll('#size-container input[readonly]')).map(input => input.value);
-    let initialColours = Array.from(document.querySelectorAll('#colour-container input[readonly]')).map(input => input.value);
+        let initialSizes = Array.from(document.querySelectorAll('#size-container input[readonly]')).map(input => input.value);
+        let initialColours = Array.from(document.querySelectorAll('#colour-container input[readonly]')).map(input => input.value);
 
-    btnConfirmUpdate.addEventListener('click', function () {
-        const currentSizes = Array.from(document.querySelectorAll('#size-container input')).map(input => input.value);
-        const currentColours = Array.from(document.querySelectorAll('#colour-container input')).map(input => input.value);
+        btnConfirmUpdate.addEventListener('click', function () {
+            const currentSizes = Array.from(document.querySelectorAll('#size-container input')).map(input => input.value);
+            const currentColours = Array.from(document.querySelectorAll('#colour-container input')).map(input => input.value);
 
-        // Cek jika ada readonly value yang hilang
-        const deletedSizes = initialSizes.filter(size => !currentSizes.includes(size));
-        const deletedColours = initialColours.filter(colour => !currentColours.includes(colour));
+            const deletedSizes = initialSizes.filter(size => !currentSizes.includes(size));
+            const deletedColours = initialColours.filter(colour => !currentColours.includes(colour));
 
-        if (deletedSizes.length > 0 || deletedColours.length > 0) {
-            const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
-            modal.show();
-        } else {
-            form.submit(); // Tidak ada yang dihapus, langsung submit
-        }
-    });
+            if (deletedSizes.length > 0 || deletedColours.length > 0) {
+                const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+                modal.show();
+            } else {
+                form.submit();
+            }
+        });
 
-    modalConfirmBtn.addEventListener('click', function () {
-        form.submit(); // Submit saat tombol modal ditekan
+        modalConfirmBtn.addEventListener('click', function () {
+            form.submit();
+        });
     });
 </script>
+
 
 @endsection
