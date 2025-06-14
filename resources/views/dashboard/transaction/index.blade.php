@@ -2,6 +2,7 @@
 
 @section('style')
 <link rel="stylesheet" href="{{ asset('assets/extensions/simple-datatables/style.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/extensions/flatpickr/flatpickr.min.css') }}">
 
 
   <link rel="stylesheet" href="{{ asset('assets/compiled/css/table-datatable.css') }}">
@@ -18,17 +19,19 @@
             <div class="card">
                 <div class="card-content">
                     <div class="card-header">
-                        <h4>{{ $monthName }}</h4>
+                        <h4>Pilih Rentang Waktu</h4>
                     </div>
                     <div class="card-body">
-                        <select id="filter_month" name="filter_month" class="form-select form-size">
-                            <option value="">Pilih Bulan</option>
-                            @foreach ($dropdown as $option)
-                                <option value="{{ $option['value'] }}" {{ request('date') == $option['value'] ? 'selected' : '' }}>
-                                    {{ $option['label'] }}
-                                </option>
-                            @endforeach
-                        </select>
+                        
+                        <form action="" method="GET" class="mb-5">
+                            <p>Pilih 2 tanggal untuk mendapat rentang waktu</p>
+
+                            <div class="input-group mb-3">
+                                <input type="text" name="date" id="date" class="form-control flatpickr-range" placeholder="Pilih rentang waktu.." value="{{ $selected_date }}">
+                                <button type="submit" class="btn btn-primary">Terapkan</button>
+                            </div>
+                        </form>
+
 
                         <div class="mt-3">
                             <div class="table-responsive">
@@ -56,7 +59,7 @@
                                         </tr>
                                         <tr>
                                             <td class="fw-bold">Cetak Laporan Penjualan</td>
-                                            <td><a href="{{ route('transactions.print', ['date' => request('date') ?? date('Y-m')]) }}" target="_blank" class="btn btn-primary">Cetak</a></td>
+                                            <td><a href="{{ route('transactions.print', ['date' => $selected_date]) }}" target="_blank" class="btn btn-primary">Cetak</a></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -110,6 +113,10 @@
 @endsection
 
 @section('script')
+<!-- Locale Indonesia -->
+<script src="{{ asset('assets/extensions/flatpickr/flatpickr.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
+<script src="{{ asset('assets/static/js/pages/date-picker.js') }}"></script>
 <script>
 document.getElementById('filter_month').addEventListener('change', function() {
     const value = this.value;

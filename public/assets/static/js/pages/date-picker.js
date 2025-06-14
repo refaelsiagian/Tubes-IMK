@@ -7,9 +7,13 @@ flatpickr('.flatpickr-always-open', {
     inline: true
 })
 flatpickr('.flatpickr-range', {
-    dateFormat: "F j, Y", 
-    mode: 'range'
-})
+    altInput: true,
+    altFormat: "d F Y",
+    dateFormat: "Y-m-d",  // value dikirim ke backend dalam bentuk ini
+    mode: 'range',
+    locale: 'id'
+});
+
 flatpickr('.flatpickr-range-preloaded', {
     dateFormat: "F j, Y", 
     mode: 'range',

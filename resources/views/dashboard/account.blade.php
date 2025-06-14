@@ -14,16 +14,31 @@
                     <div class="card-header">
                         <div class="d-flex justify-content-between">
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
-                                Tambah Admin
+                                Tambah Akun
                             </button>
                         </div>
                     </div>
                     <div class="card-body">
+                        @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>Berhasil!</strong> {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        @endif
+
+                        @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Gagal!</strong> {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        @endif
+                        
                         <table class="table table-striped table-hover" style="min-width: 800px; white-space: nowrap;">
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Nama</th>
+                                    <th>Peran</th>
                                     <th>Tanggal ditambahkan</th>
                                     <th>Status</th>
                                     <th>Action</th>
@@ -34,6 +49,11 @@
                                 <tr>
                                     <td>{{ $admin->id }}</td>
                                     <td>{{ $admin->name }}</td>
+                                    <td>
+                                        <span class="badge rounded-pill bg-info">
+                                            @if($admin->role == 'admin') Admin @else Kasir @endif
+                                        </span>
+                                    </td>
                                     <td>{{ $admin->created_at }}</td>
                                     <td>
                                         @if($admin->status == 'active')
@@ -107,6 +127,13 @@
 
                     <label for="name" class="form-label">Nama</label>
                     <input type="text" name="name" id="name" class="form-control" required autofocus placeholder="Masukkan nama">
+
+                    <label for="role" class="form-label mt-2">Peran</label>
+                    <select name="role" id="role" class="form-select" required>
+                        <option value="" disabled selected>Pilih peran</option>
+                        <option value="admin">Admin</option>
+                        <option value="kasir">Kasir</option>
+                    </select>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light-secondary"
@@ -168,6 +195,7 @@
       </div>
       <div class="modal-body">
         <p>ID: <strong>{{ session('new_id') }}</strong></p>
+        <p>Peran: <strong>{{ session('new_role') }}</strong></p>
         <p>Nama: <strong>{{ session('new_name') }}</strong></p>
         <p>Password: <strong id="passwordText">{{ session('new_password') }}</strong></p>
         <p class="text-danger">Salin password ini sekarang! Setelah modal ditutup, password tidak akan bisa dilihat lagi.</p>

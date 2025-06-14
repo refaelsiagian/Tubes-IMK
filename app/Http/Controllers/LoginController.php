@@ -37,11 +37,15 @@ class LoginController extends Controller
                 return redirect()->route('profile.change-password')->with('info', 'Silahkan ubah password terlebih dahulu');
             }
 
-            $redirectTo = $user->role === 'owner'
-                ? route('dashboard')
-                : route('tickets.index');
-            
-            return redirect()->intended($redirectTo);
+            $redirectTo = match ($user->role) {
+                'owner' => route('dashboard'),
+                'admin' => route('items.index'),
+                'kasir' => route('tickets.index'),
+                default => route('login'),
+            };
+
+            return redirect($redirectTo);
+
         }
 
         return back()->with('error', 'ID dan password tidak cocok')->withInput($request->only('id'));

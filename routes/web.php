@@ -19,6 +19,7 @@ use App\Http\Controllers\UpdateEmailController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AdminItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,13 +43,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard/chart', [DashboardController::class, 'chart'])->name('dashboard.chart');
         Route::get('/dashboard/stock', [DashboardController::class, 'stock'])->name('dashboard.stock');
         
-        Route::post('items/{id}/force-delete', [ItemController::class, 'destroy'])->name('items.force-delete');
-        Route::resource('items', ItemController::class)->except(['show', 'destroy']);
-        Route::get('items/{item}/details', [ItemController::class, 'details'])->name('items.details');
-        Route::post('items/{item}/modify', [ItemController::class, 'modify'])->name('items.modify');
-        Route::put('items/{item}/withdraw', [ItemController::class, 'withdraw'])->name('items.withdraw');
-        Route::put('items/{item}/restore', [ItemController::class, 'restore'])->name('items.restore');
-        Route::get('items/print', [ItemController::class, 'print'])->name('items.print');
+        Route::post('item/{id}/force-delete', [ItemController::class, 'destroy'])->name('item.force-delete');
+        Route::get('item', [ItemController::class, 'index'])->name('item.index');
+        Route::get('item/{item}', [ItemController::class, 'show'])->name('item.show');
+        Route::put('item/{item}/withdraw', [ItemController::class, 'withdraw'])->name('item.withdraw');
+        Route::put('item/{item}/restore', [ItemController::class, 'restore'])->name('item.restore');
+        Route::get('item/print', [ItemController::class, 'print'])->name('item.print');
         
         Route::resource('categories', CategoryController::class)->except(['show', 'edit', 'create']);
         
@@ -86,6 +86,19 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::prefix('admin')->middleware(['role:admin'])->group(function () {
+        
+        Route::get('/stock', [DashboardController::class, 'stock'])->name('admin.stock');
+
+        Route::post('items/{id}/force-delete', [AdminItemController::class, 'destroy'])->name('index.items.force-delete');
+        Route::resource('items', AdminItemController::class)->except(['show', 'destroy']);
+        Route::get('items/{item}/details', [AdminItemController::class, 'details'])->name('items.details');
+        Route::post('items/{item}/modify', [AdminItemController::class, 'modify'])->name('items.modify');
+        Route::put('items/{item}/withdraw', [AdminItemController::class, 'withdraw'])->name('items.withdraw');
+        Route::put('items/{item}/restore', [AdminItemController::class, 'restore'])->name('items.restore');
+        Route::get('items/print', [AdminItemController::class, 'print'])->name('items.print');
+    });
+
+    Route::prefix('cashier')->middleware(['role:kasir'])->group(function () {
 
         Route::get('/ticket', [TicketController::class, 'index'])->name('tickets.index');
         Route::get('/ticket/add', [TicketController::class, 'add'])->name('tickets.add');

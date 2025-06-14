@@ -3,7 +3,6 @@
 @section('style')
 <link rel="stylesheet" href="{{ asset('assets/extensions/simple-datatables/style.css') }}">
 
-
   <link rel="stylesheet" href="{{ asset('assets/compiled/css/table-datatable.css') }}">
 @endsection
 
@@ -39,7 +38,12 @@
                                     <td>{{ $stock->stock }}</td>
                                     <td>{{ $stock->limit_stock }}</td>
                                     <td>
-                                        <a href="{{ route('items.details', $stock->item_id).'?from=stock' }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Foto & Stok">Detail</a>
+                                        @can('owner')
+                                        <a href="{{ route('item.show', $stock->item_id).'?from=stock' }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Foto & Stok">Lihat</a>
+                                        @else
+                                        <a href="{{ route('items.details', $stock->item_id)}}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Foto & Stok">Detail</a>
+                                        @endcan
+
                                     </td>
                                 </tr>
                                 @endforeach
@@ -61,6 +65,7 @@
 @section('script')
 <script src="{{ asset('assets/extensions/simple-datatables/umd/simple-datatables.js') }}"></script>
 <script src="{{ asset('assets/static/js/pages/simple-datatables.js') }}"></script>
+
 <script>
     // If you want to use tooltips in your project, we suggest initializing them globally
     // instead of a "per-page" level.
