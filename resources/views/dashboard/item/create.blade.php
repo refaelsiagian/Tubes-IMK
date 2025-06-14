@@ -6,8 +6,9 @@
         cursor: not-allowed;
     }
 </style>
-@endsection
 
+<link rel="stylesheet" href="{{ asset('assets/extensions/toastify-js/src/toastify.css') }}">
+@endsection
 
 
 @section('content')
@@ -94,10 +95,16 @@
                             <div class="mb-3">
                                 <label for="buying_price" class="form-label fw-bold">Harga Beli</label>
                                 <input type="number" class="form-control" id="buying_price" name="buying_price" value="{{ old('buying_price') }}" required max="9999999">
+                                @if ($errors->has('buying_price'))
+                                    <span class="text-danger">{{ $errors->first('buying_price') }}</span>
+                                @endif
                             </div>
                             <div class="mb-3">
                                 <label for="selling_price" class="form-label fw-bold">Harga Jual</label>
                                 <input type="number" class="form-control" id="selling_price" name="selling_price" value="{{ old('selling_price') }}" required max="9999999">
+                                @if ($errors->has('selling_price'))
+                                    <span class="text-danger">{{ $errors->first('selling_price') }}</span>
+                                @endif
                             </div>
                             <button type="submit" class="btn btn-primary">Simpan & Lanjut</button>
                             <a href="{{ route('items.index') }}" class="btn btn-danger">Batal</a>
@@ -112,6 +119,8 @@
 @endsection
 
 @section('script')
+<script src="{{ asset('assets/extensions/toastify-js/src/toastify.js') }}"></script>
+
     <script>
         function addSize() {
         const container = document.getElementById('size-container');
@@ -158,4 +167,55 @@
             container.appendChild(li);
         }
     </script>
+
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelector('form').addEventListener('submit', function (e) {
+        const buyingPrice = document.getElementById('buying_price').value;
+        const sellingPrice = document.getElementById('selling_price').value;
+
+        const showToast = (msg) => {
+            Toastify({
+                text: msg,
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "center",
+                backgroundColor: "#e74c3c",
+                stopOnFocus: true,
+            }).showToast();
+        };
+
+        if (!/^\d+$/.test(buyingPrice) || !/^\d+$/.test(sellingPrice)) {
+            e.preventDefault();
+            showToast("Harga hanya boleh berisi angka tanpa titik atau koma.");
+            return;
+        }
+
+        const buy = parseInt(buyingPrice);
+        const sell = parseInt(sellingPrice);
+
+        if (buy < 1000 || sell < 1000) {
+            e.preventDefault();
+            showToast("Harga minimal adalah 1000.");
+            return;
+        }
+
+        if (buy % 100 !== 0 || sell % 100 !== 0) {
+            e.preventDefault();
+            showToast("Harga harus kelipatan 100.");
+            return;
+        }
+
+        if (sell <= buy) {
+            e.preventDefault();
+            showToast("Harga jual harus lebih tinggi dari harga beli.");
+            return;
+        }
+    });
+});
+</script>
+
+
 @endsection

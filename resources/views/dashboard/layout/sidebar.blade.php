@@ -56,7 +56,7 @@
 
                         <li class="sidebar-title">Menu</li>
                         
-                        @can('admin')
+                        @can('kasir')
                         <li
                             class="sidebar-item @if($active == 'ticket') active @endif">
                             <a href="{{ route('tickets.index') }}" class='sidebar-link'>
@@ -80,6 +80,24 @@
                         </li>
                         @endcan
                         
+
+                        @can('admin')
+                        <li
+                            class="sidebar-item @if($active == 'item') active @endif">
+                            <a href="{{ route('items.index') }}" class='sidebar-link'>
+                                <i class="bi bi-bag-fill"></i>
+                                <span>Barang</span>
+                            </a>
+                        </li>
+                        <li
+                            class="sidebar-item @if($active == 'stock') active @endif">
+                            <a href="{{ route('admin.stock') }}" class='sidebar-link'>
+                                <i class="bi bi-bookmark-dash-fill"></i>
+                                <span>Stok Tipis</span>
+                            </a>
+                        </li>
+                        @endcan
+
                         @can('owner')
                         <li
                             class="sidebar-item @if($active == 'dashboard') active @endif">
@@ -90,7 +108,7 @@
                         </li>
                         <li
                             class="sidebar-item @if($active == 'item') active @endif">
-                            <a href="{{ route('items.index') }}" class='sidebar-link'>
+                            <a href="{{ route('item.index') }}" class='sidebar-link'>
                                 <i class="bi bi-bag-fill"></i>
                                 <span>Barang</span>
                             </a>

@@ -22,7 +22,9 @@
                     <div class="card-header">
                         <div class="d-flex justify-content-between">
                             <h5 class="card-title">{{ $title }}</h5>
+                            @can('admin')
                             <a href="{{ route('items.create') }}" class="btn btn-primary">Tambah Barang</a>
+                            @endcan
                         </div>
                         <div class="btn-group mb-3">
                             <div class="dropdown">
@@ -82,6 +84,7 @@
                                         <span class="badge rounded-pill bg-danger">Ditarik</span>
                                         @endif
                                     </td>
+                                    @can('admin')
                                     <td>
                                         <a href="{{ route('items.edit', $item->id) }}" class="btn btn-success">Edit</a>
                                         <a href="{{ route('items.details', $item->id).'?from=items'  }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Foto & Stok">Detail</a>
@@ -115,6 +118,40 @@
                                             @endif
                                         </div>
                                     </td>
+                                    @else
+                                    <td>
+                                        <a href="{{ route('item.show', $item->id) }}" class="btn btn-primary">Lihat</a>
+                                        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
+                                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                            data-reference="parent">
+                                            <span class="sr-only">Status</span>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <h6 class="dropdown-header">Status</h6>
+                                            @if($item->item_status == 1)
+                                            <form action="{{ route('item.withdraw', $item->id) }}" method="POST" style="display:inline;">
+                                                @csrf
+                                                @method('PUT')
+                                                <button type="submit" class="dropdown-item btn-link" >
+                                                    Tarik
+                                                </button>
+                                            </form>
+                                            @else
+                                            <form action="{{ route('item.restore', $item->id) }}" method="POST" style="display:inline;">
+                                                @csrf
+                                                @method('PUT')
+                                                <button type="submit" class="dropdown-item btn-link">
+                                                    Tampilkan
+                                                </button>
+                                            </form>
+                                            <button type="button" class="dropdown-item btn-link" data-bs-toggle="modal"
+                                                    data-bs-target="#exampleModalCenter{{ $item->id }}">
+                                                    Hapus
+                                            </button>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    @endcan
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -200,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
             textSpan.classList.add('d-none');
             spinnerSpan.classList.remove('d-none');
 
-            fetch(`/owner/items/${itemId}/force-delete`, {
+            fetch(`/admin/items/${itemId}/force-delete`, {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': csrfToken,

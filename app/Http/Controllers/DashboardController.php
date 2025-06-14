@@ -96,7 +96,7 @@ class DashboardController extends Controller
             ->get();
 
         return view('dashboard.stock', [
-            'active' => 'dashboard',
+            'active' => auth()->user()->role == 'admin' ? 'stock' : 'dashboard',
             'lowstock' => $lowStockDetails,
             'page' => 'Stok Hampir Habis - Shabrina',
         ]);

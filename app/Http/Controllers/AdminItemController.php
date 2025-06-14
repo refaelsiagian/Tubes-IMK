@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Http\Request;
 
-class ItemController extends Controller
+class AdminItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -63,6 +63,199 @@ class ItemController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //taking the last item id and incrementing it for the new item
+        //example id = A051, A052, A053, etc.
+
+        $lastItem = Item::orderBy('id', 'desc')->first();
+
+        if ($lastItem) {
+            $lastId = $lastItem->id;
+            $numericPart = (int) substr($lastId, 1); // Cast ke integer dulu
+            $id = 'A' . str_pad($numericPart + 1, 3, '0', STR_PAD_LEFT);
+        } else {
+            $id = 'A001'; // If no items exist, start with A001
+        }
+
+        $categories = Category::all();
+
+        return view('dashboard.item.create', [
+            'active' => 'item',
+            'categories' => $categories,
+            'id' => $id,
+            'page' => 'Tambah Barang - Shabrina'
+        ]);
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'item_name' => 'required|max:255|unique:items,item_name',
+            'category_id' => 'required|exists:categories,id',
+            'size' => 'nullable|array',
+            'colour' => 'nullable|array',
+            'item_description' => 'nullable|string',
+            'buying_price' => [
+                'required',
+                'integer',
+                'min:1000',
+                'max:9999999',
+                function ($attribute, $value, $fail) {
+                    if ($value % 100 !== 0) {
+                        $fail('Harga beli harus kelipatan 100.');
+                    }
+                },
+            ],
+            'selling_price' => [
+                'required',
+                'integer',
+                'min:1000',
+                'max:9999999',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($value % 100 !== 0) {
+                        $fail('Harga jual harus kelipatan 100.');
+                    }
+
+                    if ($request->buying_price && $value <= $request->buying_price) {
+                        $fail('Harga jual harus lebih tinggi dari harga beli.');
+                    }
+                },
+            ],
+        ], [], [
+            'item_name' => 'nama barang',
+            'category_id' => 'kategori',
+            'buying_price' => 'harga beli',
+            'selling_price' => 'harga jual',
+        ]);
+
+
+
+        $item = Item::where('item_name', $request->item_name)->first();
+        if ($item) {
+            return redirect()->route('items.create')->with('error', 'Barang sudah ada.')->withInput();
+        }
+
+        $slug = str_replace(' ', '-', strtolower($request->item_name));
+        $request->merge(['item_slug' => $slug, 'item_status' => 0]);
+
+        $newItem = Item::create($request->except(['size', 'colour']));
+
+        // Panggil fungsi untuk buat detail
+        $this->createItemDetails($newItem, $request->input('size', []), $request->input('colour', []));
+
+        // Panggil fungsi untuk buat image slots
+        $this->createImageSlots($newItem, $request->input('colour', []));
+
+        return redirect()->route('items.details', $newItem->id)->with('success', 'Barang berhasil ditambahkan. Silahkan isi detail barang.');
+    }
+
+
+    /**
+     * Display the specified resource details.
+     */
+    public function details(string $id)
+    {
+        $item = Item::with(['details', 'images'])->findOrFail($id);
+
+        // Ambil semua warna dari images (kecuali yang general / colour null)
+        $colours = $item->images->whereNotNull('colour')->pluck('colour')->unique()->values();
+
+        // Ambil semua kombinasi size + colour dari details
+        $details = $item->details;
+
+        $image_general = $item->images->whereNull('colour');
+        $image_colour = $item->images->whereNotNull('colour');
+
+        return view('dashboard.item.detail', [
+            'item' => $item,
+            'colours' => $colours,
+            'details' => $details,
+            'image_general' => $image_general,
+            'image_colour' => $image_colour,
+            'active' => 'item',
+            'page' => 'Detail Barang - Shabrina'
+        ]);
+
+    }
+
+
+    /**
+     * Modify the details of the item.
+     * This method is called after the details are filled in.
+     */
+    public function modify(Request $request, string $id)
+    {
+        $item = Item::findOrFail($id);
+        $withdraw = false;
+
+        // 1️⃣ Hapus gambar yang ditandai
+        $removeIds = $request->input('remove_image', []);
+        foreach ($removeIds as $imageId) {
+            $slot = Image::find($imageId);
+            if ($slot && $slot->image_name) {
+                Storage::disk('public')->delete($slot->image_name);
+                $slot->update(['image_name' => null]);
+            }
+        }
+
+        // 2️⃣ Upload gambar baru (langsung ganti)
+        $inputImages = $request->file('image', []);
+        foreach ($inputImages as $slotId => $uploadedFile) {
+            $slot = Image::find($slotId);
+            if ($slot && $uploadedFile) {
+                // Hapus gambar lama (kalau ada)
+                if ($slot->image_name) {
+                    Storage::disk('public')->delete($slot->image_name);
+                }
+                $path = $uploadedFile->store('images', 'public');
+                $slot->update(['image_name' => $path]);
+            }
+        }
+
+        // 3️⃣ Update Stock (biarkan)
+        if ($request->has('stock')) {
+            foreach ($request->input('stock') as $detailId => $stockValue) {
+                $detail = Detail::find($detailId);
+                if ($detail) {
+                    $detail->update([
+                        'stock' => is_numeric($stockValue) ? $detail->stock + $stockValue : 0,
+                    ]);
+                }
+            }
+        }
+
+        if($request->has('limit_stock')){
+            $item->update([
+                'limit_stock' => $request->input('limit_stock'),
+            ]);
+        }
+
+        // 5️⃣ Update status item berdasarkan validasi gambar
+        if (!$item->hasValidImages()) {
+            if($item->item_status == 1){
+                // Jika item sebelumnya aktif, tarik item
+                $item->item_status = 0; // Tarik item
+                $withdraw = true;
+            }
+        }
+
+        $item->save();
+
+        return back()->with('success', $withdraw == false
+            ? 'Item berhasil diperbarui!'
+            : 'Item diperbarui, tetapi ditarik karena gambar tidak lengkap.');
+
+    }
+
+
+    /**
      * Withdraw an item.
      */
     public function withdraw(string $id){
@@ -104,36 +297,7 @@ class ItemController extends Controller
      */
     public function show(string $id)
     {
-        $item = Item::with(['category', 'details', 'images'])->findOrFail($id);
-
-        // Ambil semua warna unik dari gambar yang punya warna
-        $colours = $item->images->whereNotNull('colour')->pluck('colour')->unique()->values();
-
-        // Ambil semua kombinasi size + colour dari detail
-        $details = $item->details;
-
-        // Gambar umum dan per warna
-        $image_general = $item->images->whereNull('colour');
-        $image_colour = $item->images->whereNotNull('colour');
-
-        // Data tambahan yang dulu dipakai di edit
-        $categories = Category::all();
-        $sizes = Detail::where('item_id', $id)->pluck('size')->unique()->values();
-        $coloursFromDetail = Detail::where('item_id', $id)->pluck('colour')->unique()->values();
-
-        return view('dashboard.item.show', [
-            'id' => $id,
-            'item' => $item,
-            'categories' => $categories,
-            'details' => $details,
-            'colours' => $colours,
-            'image_general' => $image_general,
-            'image_colour' => $image_colour,
-            'sizes' => $sizes,
-            'coloursFromDetail' => $coloursFromDetail,
-            'active' => 'item',
-            'page' => 'Lihat Barang - Shabrina'
-        ]);
+        return view('dashboard.item.show', ['id' => $id]);
     }
 
 
@@ -165,15 +329,43 @@ class ItemController extends Controller
         try {
             $item = Item::findOrFail($id);
 
-            // Cek validasi input
             $request->validate([
-                'item_name' => 'required|max:255|unique:items,item_name,' . $item->id,
+                'item_name' => 'required|max:255|unique:items,item_name' . $item,
                 'category_id' => 'required|exists:categories,id',
                 'size' => 'nullable|array',
                 'colour' => 'nullable|array',
                 'item_description' => 'nullable|string',
-                'buying_price' => 'nullable|numeric|min:0',
-                'selling_price' => 'nullable|numeric|min:0',
+                'buying_price' => [
+                    'required',
+                    'integer',
+                    'min:1000',
+                    'max:9999999',
+                    function ($attribute, $value, $fail) {
+                        if ($value % 100 !== 0) {
+                            $fail('Harga beli harus kelipatan 100.');
+                        }
+                    },
+                ],
+                'selling_price' => [
+                    'required',
+                    'integer',
+                    'min:1000',
+                    'max:9999999',
+                    function ($attribute, $value, $fail) use ($request) {
+                        if ($value % 100 !== 0) {
+                            $fail('Harga jual harus kelipatan 100.');
+                        }
+
+                        if ($request->buying_price && $value <= $request->buying_price) {
+                            $fail('Harga jual harus lebih tinggi dari harga beli.');
+                        }
+                    },
+                ],
+            ], [], [
+                'item_name' => 'nama barang',
+                'category_id' => 'kategori',
+                'buying_price' => 'harga beli',
+                'selling_price' => 'harga jual',
             ]);
 
             // Update data utama
@@ -358,9 +550,6 @@ class ItemController extends Controller
             ]);
         }
     }
-
-
-
 
     private function createImageSlots($item, $colours = [])
     {

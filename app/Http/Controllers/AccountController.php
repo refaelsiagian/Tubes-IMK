@@ -11,7 +11,7 @@ class AccountController extends Controller
     public function index()
     {
 
-        $admins = User::where('role', 'admin')
+        $admins = User::whereNot('role', 'owner')
                     ->get();
 
         return view('dashboard.account',[
@@ -23,7 +23,8 @@ class AccountController extends Controller
     }
 
     public function store(Request $request)
-    {
+    { 
+        dd($request->all());
         $newId = $this->generateNewUserId();
 
         // Generate random password (misalnya 8 karakter)
@@ -35,17 +36,18 @@ class AccountController extends Controller
             'name' => $request->name,
             'password' => bcrypt($plainPassword),
             'password_reset' => true,
-            'role' => 'admin',
+            'role' => $request->role,
             'status' => 'active',
         ]);
 
         // Kirim plain password ke view agar bisa ditampilkan di modal
         return redirect()->back()->with([
-            'success' => 'Admin berhasil ditambahkan.',
+            'success' => 'Akun baru berhasil ditambahkan.',
             'new_password' => $plainPassword,
             'new_name' => $request->name,
+            'new_role' => $request->role,
             'new_id' => $newId,
-            'title' => 'Akun Admin Baru',
+            'title' => 'Akun Baru',
         ]);
     }
 
@@ -84,6 +86,7 @@ class AccountController extends Controller
             'success' => 'Password berhasil direset.',
             'new_password' => $newPassword,
             'new_name' => $user->name,
+            'new_role' => $user->role,
             'new_id' => $user->id,
             'title' => 'Reset Password',
         ]);
